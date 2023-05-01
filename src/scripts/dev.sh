@@ -1,3 +1,8 @@
+# Install Xcode Command Line Tools and accept license
+sudo rm -rf /Library/Developer/CommandLineTools
+sudo xcode-select --install
+sudo xcodebuild -license accept
+
 # Git config
 git config --global credential.helper cache
 git config --global user.email "garret.patten@proton.me"
@@ -16,7 +21,3 @@ brew install --cask postman
 
 # Install VS Code
 brew install --cask visual-studio-code
-
-# TODO: Install Xcode
-sudo rm -rf /Library/Developer/CommandLineTools
-sudo xcode-select --install
