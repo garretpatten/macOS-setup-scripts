@@ -5,6 +5,9 @@
 # Begin: System Updates
 brew update && brew upgrade && brew cleanup
 
+# Security: Firewall, VPN, Anti-Virus
+sh ./security.sh
+
 # CLI Tooling
 sh ./scripts/cli.sh
 

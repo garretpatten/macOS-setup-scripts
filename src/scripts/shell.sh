@@ -1,4 +1,5 @@
-# TODO: Install iTerm2
+# Install iTerm2
+brew install --cask iterm2
 
 # Install Zsh
 sudo brew install zsh
