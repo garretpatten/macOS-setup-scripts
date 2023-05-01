@@ -9,7 +9,7 @@ brew install --cask simplenote
 brew install task
 
 # Taskwarrior config
-cat ../artifacts/taskwarrior/taskrcUpdates.txt >> ~/.taskrc
+cat "$(pwd)/src/artifacts/taskwarrior/taskrcUpdates.txt" >> ~/.taskrc
 
 # Add directory for custom themes
 mkdir ~/.task/themes/

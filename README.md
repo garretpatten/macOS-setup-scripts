@@ -6,11 +6,14 @@ A repository of setup scripts for my personal mac environments
 # Clone repository
 git clone https://github.com/garretpatten/apple-setup-scripts
 
+# Checkout root of project
+cd apple-setup-scripts
+
 # Make scripts executable
-sudo chmod +x apple-setup-scripts/src/scripts/
+sudo chmod +x src/scripts/
 
 # Run master script
-sudo sh apple-setup-scripts/src/scripts/master.sh
+sh src/scripts/master.sh
 ```
 
 # Installations

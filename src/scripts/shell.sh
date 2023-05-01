@@ -16,4 +16,4 @@ cd ~/.oh-my-zsh/custom/plugins
 git clone https://github.com/zsh-users/zsh-autosuggestions.git
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 
-cat ../artifacts/zsh/zshrc.txt > ~/.zshrc
+cat "$(pwd)/src/artifacts/zsh/zshrc.txt" > ~/.zshrc

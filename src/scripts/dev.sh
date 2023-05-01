@@ -5,7 +5,7 @@ git config --global user.name "Garret Patten"
 git config pull.rebase false
 
 # Vim config
-cat ../artifacts/vim/vimrc.txt >> ~/.vimrc
+cat "$(pwd)/src/artifacts/vim/vimrc.txt" >> ~/.vimrc
 
 # Install Sourcegraph CLI
 brew install sourcegraph/src-cli/src-cli
@@ -18,3 +18,5 @@ brew install --cask postman
 brew install --cask visual-studio-code
 
 # TODO: Install Xcode
+sudo rm -rf /Library/Developer/CommandLineTools
+sudo xcode-select --install
