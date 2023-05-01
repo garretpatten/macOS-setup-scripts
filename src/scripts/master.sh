@@ -1,6 +1,9 @@
 # Pre-Install
 sh "$(pwd)/src/scripts/pre-install.sh"
 
+# Organize Directories
+sh ./organizeHome.sh
+
 # Install HomeBrew
 # https://brew.sh/
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
