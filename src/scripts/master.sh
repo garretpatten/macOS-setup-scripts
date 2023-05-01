@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Pre-Install
 sh "$(pwd)/src/scripts/pre-install.sh"
 

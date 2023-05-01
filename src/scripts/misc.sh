@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Balena Etcher
 brew install --cask balenaetcher
 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Install iTerm2
 brew install --cask iterm2
 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # TODO: Install Office suite
 
 # Install Simplenote
