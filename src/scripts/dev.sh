@@ -1,8 +1,3 @@
-# Install Xcode Command Line Tools and accept license
-sudo rm -rf /Library/Developer/CommandLineTools
-sudo xcode-select --install
-sudo xcodebuild -license accept
-
 # Git config
 git config --global credential.helper cache
 git config --global user.email "garret.patten@proton.me"
