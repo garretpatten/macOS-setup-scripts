@@ -7,9 +7,9 @@ git config pull.rebase false
 # Vim config
 cat "$(pwd)/src/artifacts/vim/vimrc.txt" >> ~/.vimrc
 
-# Install Sourcegraph CLI
+# Install Sourcegraph App & CLI
+brew install sourcegraph/app/sourcegraph
 brew install sourcegraph/src-cli/src-cli
-brew upgrade src-cli
 
 # Install Postman
 brew install --cask postman
