@@ -2,6 +2,12 @@
 A repository of setup scripts for my personal mac environments
 
 # Instructions
+
+## Before Using
+1. Carry out a full System update through System Settings.
+2. Be prepared with 2 hardware keys (primary & backup).
+
+## How to Use
 ```
 # Clone repository
 git clone https://github.com/garretpatten/apple-setup-scripts
