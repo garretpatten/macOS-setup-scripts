@@ -1,12 +1,20 @@
-# Disk Utilities
+# Balena Etcher
 brew install --cask balenaetcher
 
-# Email client
+# Burp Suite
+brew install --cask burp-suite
+
+# Spotify
+brew install --cask spotify
+
+# Signal
+brew install --cask signal
+
+# Thunderbird
 brew install thunderbird
 
-# Media
-brew install --cask spotify
+# VLC
 brew install vlc
 
-# Messagers
-brew install --cask signal
+# Zoom
+brew install --cask zoom

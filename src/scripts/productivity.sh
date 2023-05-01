@@ -1,7 +1,14 @@
-# Install taskwarrior
-brew install task -y
+# TODO: Install Office suite
 
-# Update config file
+# Install Simplenote
+brew install --cask simplenote
+
+# TODO: Install Spectacle
+
+# Install taskwarrior
+brew install task
+
+# Taskwarrior config
 cat ../artifacts/taskwarrior/taskrcUpdates.txt >> ~/.taskrc
 
 # Add directory for custom themes
@@ -12,6 +19,3 @@ mkdir ~/.task/themes/
 
 # Install Todoist
 brew install --cask todoist
-
-# Install Simplenote
-brew install --cask simplenote

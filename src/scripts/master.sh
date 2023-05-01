@@ -11,14 +11,16 @@ sh ./security.sh
 # CLI Tooling
 sh ./scripts/cli.sh
 
-# Productivity: Taskwarrior, Todoist
+# Productivity: Simplenote, Taskwarrior, Todoist
 sh ./scripts/productivity.sh
 
-# TODO: Web
+# Web: Brave & Firefox
+sh ./web.sh
 
-# TODO: Dev
+# Development Setup: Git, Postman, Sourcegraph, Vim, VS Code
+sh ./dev.sh
 
-# Shell
+# Shell: iTerm2, zsh, oh-my-zsh
 sh ./shell.sh
 
 # Other
