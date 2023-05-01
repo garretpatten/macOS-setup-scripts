@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Add non-automated tasks to Taskwarrior
 if [[ -d "/usr/local/cellar/task/"]]; then
 	# High Priority Tasks
 	task add Log in to iCloud project:mac priority:H
@@ -17,3 +18,4 @@ if [[ -d "/usr/local/cellar/task/"]]; then
 	task add Download files from Proton Drive project:setup priority:L
 else
 	echo "Taskwarrior is not installed. Please install Taskwarrior and re-run the addTasks script."
+fi

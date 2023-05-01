@@ -14,16 +14,17 @@ if [[ -d "/usr/local/cellar/sourcegraph/" ]]; then
 	echo "Sourcegraph app is already installed."
 else
 	brew install sourcegraph/app/sourcegraph
+fi
 
 if [[ -d "/usr/local/cellar/src-cli/" ]]; then
 	echo "Sourcegraph CLI is already installed."
 else
 	brew install sourcegraph/src-cli/src-cli
+fi
 
 # Install Postman and VS Code
-apps=("postman" "visual-studio-code")
-
-for app in ${apps[@]}; do
+caskApps=("postman" "visual-studio-code")
+for app in ${caskApps[@]}; do
 	if [[ -d "/usr/local/Caskroom/$app/" ]]; then
 		echo "$app is already installed."
 	else

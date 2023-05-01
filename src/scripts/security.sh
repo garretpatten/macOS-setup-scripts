@@ -3,14 +3,15 @@
 # Enable Firewall
 sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
 
-# Install 1Password
-brew install --cask 1password
-
-# Install 1Password CLI
-brew install --cask 1password-cli
-
-# Install Proton VPN client
-brew install --cask protonvpn
+# Install 1Password, 1Password CLI, Proton VPN Client
+caskApps=("1password" "1password-cli" "protonvpn")
+for app in ${caskApps[@]}; do
+	if [[ -d "usr/local/Caskroom/$app/"]]; then
+		echo "$app is already installed."
+	else
+		brew install --cask "$app"
+	fi
+done
 
 ## TODO: Install Proton VPN CLI
 

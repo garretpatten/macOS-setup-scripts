@@ -1,22 +1,21 @@
 #!/bin/bash
 
-# Balena Etcher
-brew install --cask balenaetcher
+# Install Thunderbird and VLC
+apps=("thunderbird" "vlc")
+for app in ${apps[@]}; do
+	if [[ -d "usr/local/Caskroom/$app/"]]; then
+		echo "$app is already installed."
+	else
+		brew install --cask "$app"
+	fi
+done
 
-# Burp Suite
-brew install --cask burp-suite
-
-# Spotify
-brew install --cask spotify
-
-# Signal
-brew install --cask signal
-
-# Thunderbird
-brew install thunderbird
-
-# VLC
-brew install vlc
-
-# Zoom
-brew install --cask zoom
+# Install Balena Etcher, Burp Suite, Spotify, Signal, and Zoom
+caskApps=("balenaetcher" "burp-suite" "spotify" "signal" "zoom")
+for caskApp in ${caskApps[@]}; do
+	if [[ -d "usr/local/Caskroom/$caskApp/"]]; then
+		echo "$caskApp is already installed."
+	else
+		brew install --cask "$caskApp"
+	fi
+done

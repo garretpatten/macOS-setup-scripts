@@ -1,10 +1,18 @@
 #!/bin/bash
 
 # Install iTerm2
-brew install --cask iterm2
+if [[ -d "usr/local/Caskroom/iterm2/"]]; then
+	echo "iTerm2 is already installed."
+else
+	brew install --cask iterm2
+fi
 
 # Install Zsh
-brew install zsh
+if [[ -d "usr/local/cellar/zsh/"]]; then
+	echo "Zsh is already installed."
+else
+	brew install zsh
+fi
 
 # Change User Shells to Zsh
 chsh -s $(which zsh)
