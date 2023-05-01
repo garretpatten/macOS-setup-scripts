@@ -2,7 +2,7 @@
 sh "$(pwd)/src/scripts/pre-install.sh"
 
 # Organize Directories
-sh ./organizeHome.sh
+sh "$(pwd)/src/scripts/organizeHome.sh"
 
 # Install HomeBrew
 # https://brew.sh/
