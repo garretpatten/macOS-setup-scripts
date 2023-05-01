@@ -10,11 +10,23 @@ git config pull.rebase false
 cat "$(pwd)/src/artifacts/vim/vimrc.txt" >> ~/.vimrc
 
 # Install Sourcegraph App & CLI
-brew install sourcegraph/app/sourcegraph
-brew install sourcegraph/src-cli/src-cli
+if [[ -d "/usr/local/cellar/sourcegraph/" ]]; then
+	echo "Sourcegraph app is already installed."
+else
+	brew install sourcegraph/app/sourcegraph
 
-# Install Postman
-brew install --cask postman
+if [[ -d "/usr/local/cellar/src-cli/" ]]; then
+	echo "Sourcegraph CLI is already installed."
+else
+	brew install sourcegraph/src-cli/src-cli
 
-# Install VS Code
-brew install --cask visual-studio-code
+# Install Postman and VS Code
+apps=("postman" "visual-studio-code")
+
+for app in ${apps[@]}; do
+	if [[ -d "/usr/local/Caskroom/$app/" ]]; then
+		echo "$app is already installed."
+	else
+		brew install --cask "$app"
+	fi
+done

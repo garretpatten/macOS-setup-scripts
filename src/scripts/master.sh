@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: Only proceed if scripts are executable
+
 # Pre-Install
 sh "$(pwd)/src/scripts/pre-install.sh"
 
