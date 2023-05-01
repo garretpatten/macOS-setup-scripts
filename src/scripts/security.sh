@@ -13,4 +13,4 @@ brew install --cask protonvpn
 ## TODO: Install Proton VPN CLI
 
 # Install Clam AV
-sudo brew install clamav
+brew install clamav

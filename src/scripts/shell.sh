@@ -2,7 +2,7 @@
 brew install --cask iterm2
 
 # Install Zsh
-sudo brew install zsh
+brew install zsh
 
 # Change User Shells to Zsh
 chsh -s $(which zsh)
