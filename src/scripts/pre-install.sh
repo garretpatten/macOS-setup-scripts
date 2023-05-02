@@ -3,7 +3,7 @@
 # Fresh Install of Xcode Command Line Tools
 xcodePath="/Library/Developer/CommandLineTools/"
 
-if [[ -d "$xcodePath"]]; then
+if [[ -d "$xcodePath" ]]; then
 	sudo rm -rf "$xcodePath"
 fi
 

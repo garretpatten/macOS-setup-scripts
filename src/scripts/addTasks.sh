@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Add non-automated tasks to Taskwarrior
-if [[ -d "/usr/local/cellar/task/"]]; then
+if [[ -d "/usr/local/cellar/task/" ]]; then
 	# High Priority Tasks
 	task add Log in to iCloud project:mac priority:H
 	task add Export GitHub PAT with 1Password project:dev priority:H

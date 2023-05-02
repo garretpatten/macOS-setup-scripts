@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Install iTerm2
-if [[ -d "usr/local/Caskroom/iterm2/"]]; then
+if [[ -d "usr/local/Caskroom/iterm2/" ]]; then
 	echo "iTerm2 is already installed."
 else
 	brew install --cask iterm2
 fi
 
 # Install Zsh
-if [[ -d "usr/local/cellar/zsh/"]]; then
+if [[ -d "usr/local/cellar/zsh/" ]]; then
 	echo "Zsh is already installed."
 else
 	brew install zsh
@@ -26,4 +26,5 @@ cd ~/.oh-my-zsh/custom/plugins
 git clone https://github.com/zsh-users/zsh-autosuggestions.git
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 
-cat "$(pwd)/src/artifacts/zsh/zshrc.txt" > ~/.zshrc
+# Configure zshrc
+cd && cat "$(pwd)/src/artifacts/zsh/zshrc.txt" > ~/.zshrc
