@@ -9,7 +9,7 @@ git config pull.rebase false
 # Vim config
 cat "$(pwd)/src/artifacts/vim/vimrc.txt" >> ~/.vimrc
 
-# Install GitHub CLI && Sourcegraph CLI
+# Install GitHub CLI and Sourcegraph CLI
 apps=("gh" "src-cli")
 for app in ${apps[@]}; do
 	if [[ -d "/usr/local/cellar/$app/" ]]; then
