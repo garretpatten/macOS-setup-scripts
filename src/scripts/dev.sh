@@ -9,6 +9,9 @@ git config pull.rebase false
 # Vim config
 cat "$(pwd)/src/artifacts/vim/vimrc.txt" >> ~/.vimrc
 
+# Install GitHub CLI
+brew install install gh
+
 # Install Sourcegraph App & CLI
 if [[ -d "/usr/local/cellar/sourcegraph/" ]]; then
 	echo "Sourcegraph app is already installed."
