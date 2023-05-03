@@ -9,20 +9,21 @@ git config pull.rebase false
 # Vim config
 cat "$(pwd)/src/artifacts/vim/vimrc.txt" >> ~/.vimrc
 
-# Install GitHub CLI
-brew install install gh
+# Install GitHub CLI && Sourcegraph CLI
+apps=("gh" "src-cli")
+for app in ${apps[@]}; do
+	if [[ -d "/usr/local/cellar/$app/" ]]; then
+		echo "$app is already installed."
+	else
+		brew install "$app"
+	fi
+done
 
-# Install Sourcegraph App & CLI
+# Install Sourcegraph App
 if [[ -d "/usr/local/cellar/sourcegraph/" ]]; then
 	echo "Sourcegraph app is already installed."
 else
 	brew install sourcegraph/app/sourcegraph
-fi
-
-if [[ -d "/usr/local/cellar/src-cli/" ]]; then
-	echo "Sourcegraph CLI is already installed."
-else
-	brew install sourcegraph/src-cli/src-cli
 fi
 
 # Install Postman and VS Code
