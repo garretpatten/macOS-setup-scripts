@@ -2,7 +2,7 @@
 
 # TODO: Install Office suite
 
-# TODO: Install Spectacle
+# Install Spectacle & Taskwarrior
 apps=("spectacle" "task")
 for app in ${apps[@]}; do
 	if [[ -d "usr/local/cellar/$app/" ]]; then
@@ -16,7 +16,7 @@ done
 cat "$(pwd)/src/artifacts/taskwarrior/taskrcUpdates.txt" >> ~/.taskrc
 
 # Add directory for custom themes
-if [[ -d "~/.task/themes/" ]]; then
+if [[ -d "$HOME/.task/themes/" ]]; then
 	echo "Taskwarrior themes directory already exists."
 else
 	mkdir ~/.task/themes/
