@@ -1,13 +1,10 @@
 #!/bin/bash
 
-# Checkout home directory
-cd
-
 # Remove unneeded directories
-directoriesToRemove=("Desktop" "Music" "Public" "Templates" "Videos")
+directoriesToRemove=("Music" "Public" "Templates" "Videos")
 for directoryToRemove in ${directoriesToRemove[@]}; do
-	if [[ -d "~/$directoryToRemove/" ]]; then
-		rmdir "$directoryToRemove"
+	if [[ -d "$HOME/$directoryToRemove/" ]]; then
+		rmdir "$HOME/$directoryToRemove"
 	else
 		echo "$directoryToRemove is already removed."
 	fi
@@ -15,11 +12,11 @@ done
 
 # Add needed directories
 # TODO: Add directories that align with backups
-directoriesToCreate=("repos")
+directoriesToCreate=("Repos")
 for directoryToCreate in ${directoriesToCreate[@]}; do
-	if [[ -d "~/$directoryToCreate/" ]]; then
+	if [[ -d "$HOME/$directoryToCreate/" ]]; then
 		echo "$directoryToCreate is already created."
 	else
-		mkdir "$directoryToCreate"
+		mkdir "$HOME/$directoryToCreate"
 	fi
 done
