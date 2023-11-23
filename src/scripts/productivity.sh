@@ -13,7 +13,7 @@ for app in ${apps[@]}; do
 done
 
 # Taskwarrior config
-cat "$(pwd)/src/artifacts/taskwarrior/taskrcUpdates.txt" >> ~/.taskrc
+cat "$(pwd)/src/config-files/taskwarrior/taskrcUpdates.txt" >> ~/.taskrc
 
 # Add directory for custom themes
 if [[ -d "$HOME/.task/themes/" ]]; then
@@ -23,7 +23,7 @@ else
 fi
 
 # TODO: Add custom themes to directory
-# cp ./src/artifacts/taskwarrior/themes/ ~/.task/themes/
+# cp ./src/config-files/taskwarrior/themes/ ~/.task/themes/
 
 # Install Simplenote and Todoist
 caskApps=("simplenote" "todoist")

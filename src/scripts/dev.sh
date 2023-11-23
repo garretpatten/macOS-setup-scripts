@@ -9,7 +9,7 @@ if [[ ! -f "$HOME/.gitconfig" ]]; then
 fi
 
 # Vim config
-cat "$(pwd)/src/artifacts/vim/vimrc.txt" >> ~/.vimrc
+cat "$(pwd)/src/config-files/vim/vimrc.txt" >> ~/.vimrc
 
 # Install GitHub CLI and Sourcegraph CLI
 apps=("gh" "src-cli")
