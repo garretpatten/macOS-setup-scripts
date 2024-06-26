@@ -1,34 +1,46 @@
 #!/bin/bash
 
-# Install iTerm2
-if [[ -d "usr/local/Caskroom/iterm2/" ]]; then
-	echo "iTerm2 is already installed."
-else
-	brew install --cask iterm2
-fi
-
 # Install Zsh
-if [[ -d "usr/local/cellar/zsh/" ]]; then
-	echo "Zsh is already installed."
-else
-	brew install zsh
+if [[!  -d "usr/local/cellar/zsh/" ]]; then
+    brew install zsh
 fi
 
 # Change User Shells to Zsh
 chsh -s $(which zsh)
 sudo chsh -s $(which zsh)
 
-# Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+### Install fonts ###
 
-# Install plugins
-currentPath=$(pwd)
+# TODO: Install Awesome Terminal Fonts
+brew install --cask font-awesome-terminal-fonts
 
-cd ~/.oh-my-zsh/custom/plugins
-git clone https://github.com/zsh-users/zsh-autosuggestions.git
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+# TODO: Install Fira Code Fonts
+brew tap homebrew/cask-fonts
+brew install --cask font-fira-code
 
-# Configure zshrc
-cd && cat "$(pwd)/src/config-files/zsh/zshrc.txt" > ~/.zshrc
+# TODO: Install Meslo Nerd Fonts
+brew install --cask font-meslo-lg-nerd-font
 
-cd $currentPath
+# TODO: Install Powerline Fonts
+brew tap homebrew/cask-fonts
+brew cask install font-powerline-symbols
+
+### TODO: Install oh-my-posh ###
+brew install jandedobbeleer/oh-my-posh/oh-my-posh
+
+### Zsh Plugins ###
+brew install zsh-autosuggestions
+brew install zsh-syntax-highlighting
+
+### Terminal Configuration ###
+
+# Configure Alacritty
+if [[ ! -d "$HOME/.config/alacritty/" ]]; then
+    mkdir -p "$HOME/.config/alacritty"
+    git clone https://github.com/alacritty/alacritty-theme "$HOME/.config/alacritty/"
+    touch "$HOME/.config/alacritty/alacritty.toml"
+    cp "$(pwd)/src/dotfiles/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+fi
+
+# Update ~/.zshrc
+cp "$(pwd)/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"

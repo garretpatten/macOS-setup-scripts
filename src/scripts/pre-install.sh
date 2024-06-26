@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# Fresh Install of Xcode Command Line Tools
+# Xcode Command Line Tools Fresh Install
 xcodePath="/Library/Developer/CommandLineTools/"
 
 if [[ -d "$xcodePath" ]]; then
-	sudo rm -rf "$xcodePath"
+    sudo rm -rf "$xcodePath"
 fi
 
 sudo xcode-select --install
 sudo xcodebuild -license accept
+
+# Homebrew package manager
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# System updates
+brew update && brew upgrade && brew cleanup

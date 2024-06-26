@@ -1,19 +1,33 @@
 #!/bin/bash
 
-# Enable Firewall
+### Authentication & Secrets Management ###
+
+# 1Password and 1Password CLI
+caskApps=("1password" "1password-cli")
+for app in ${caskApps[@]}; do
+    if [[ ! -d "usr/local/Caskroom/$app/" ]]; then
+        brew install --cask "$app"
+    fi
+done
+
+### Defensive Security ###
+
+# Clam AV
+brew install clamav
+
+# Firewall
 sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
 
-# Install 1Password, 1Password CLI, Proton VPN Client
-caskApps=("1password" "1password-cli" "protonvpn")
-for app in ${caskApps[@]}; do
-	if [[ -d "usr/local/Caskroom/$app/" ]]; then
-		echo "$app is already installed."
-	else
-		brew install --cask "$app"
-	fi
-done
+### Privacy ###
+
+# Proton VPN Client
+if [[ ! -d "usr/local/Caskroom/protonvpn/" ]]; then
+    brew install --cask protonvpn
+fi
 
 ## TODO: Install Proton VPN CLI
 
-# Install Clam AV
-brew install clamav
+# Signal Messenger
+if [[ ! -d "usr/local/Caskroom/signal/" ]]; then
+    brew install --cask signal
+fi
