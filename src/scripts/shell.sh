@@ -11,26 +11,43 @@ sudo chsh -s $(which zsh)
 
 ### Install fonts ###
 
-# TODO: Install Awesome Terminal Fonts
-brew install --cask font-awesome-terminal-fonts
+# Awesome Terminal Fonts
+if [[ ! -f "$HOME/Library/Fonts/SourceCodePro+Powerline+Awesome+Regular.ttf" ]]; then
+    brew install --cask font-awesome-terminal-fonts
+fi
 
-# TODO: Install Fira Code Fonts
-brew tap homebrew/cask-fonts
-brew install --cask font-fira-code
+# Fira Code Fonts
+if [[ ! -f "$HOME/Library/Fonts/FiraCode-Regular.ttf" ]]; then
+    brew tap homebrew/cask-fonts
+    brew install --cask font-fira-code
+fi
 
-# TODO: Install Meslo Nerd Fonts
-brew install --cask font-meslo-lg-nerd-font
+# Meslo Nerd Fonts
+if [[ ! -f "$HOME/Library/Fonts/MesloLFMNerdFont-Regular.ttf" ]]; then
+    brew install --cask font-meslo-lg-nerd-font
+fi
 
-# TODO: Install Powerline Fonts
-brew tap homebrew/cask-fonts
-brew cask install font-powerline-symbols
+# Powerline Fonts\
+if [[ ! -f "$HOME/Library/Fonts/PowerlineSymbols.otf" ]]; then
+    brew cask install font-powerline-symbols
+fi
 
-### TODO: Install oh-my-posh ###
-brew install jandedobbeleer/oh-my-posh/oh-my-posh
+### oh-my-posh ###
+if [[ ! -f "/opt/homebrew/bin/oh-my-posh" ]]; then
+    brew install jandedobbeleer/oh-my-posh/oh-my-posh
+fi
 
 ### Zsh Plugins ###
-brew install zsh-autosuggestions
-brew install zsh-syntax-highlighting
+
+# Autosuggestions
+if [[ ! -d "/opt/homebrew/share/zsh-autosuggestions/" ]]; then
+    brew install zsh-autosuggestions
+fi
+
+# Syntax Highlighting
+if [[ ! -d "/opt/homebrew/share/zsh-syntax-highlighting/" ]]; then
+    brew install zsh-syntax-highlighting
+fi
 
 ### Terminal Configuration ###
 

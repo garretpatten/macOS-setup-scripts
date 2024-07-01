@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# Balena-Etcher
-if [[ ! -d "usr/local/Caskroom/balena-etcher/" ]]; then
-    brew install --cask balena-etcher
-fi
-
-# Kindle
-if [[ ! -d "usr/local/Caskroom/kindle/" ]]; then
-    brew install --cask kindle
-fi
-
 # Notion
 if [[ ! -d "usr/local/Caskroom/notion/" ]]; then
     brew install --cask notion
@@ -42,12 +32,8 @@ if [[ ! -d "usr/local/cellar/task/" ]]; then
     task add Disable Spotlight hotkey in favor or Raycast project:setup priority:H
 
     task add Install Notion project:PWAs priority:M
-    task add Install Proton Drive project:PWAs priority:M
-    task add Install Proton Mail project:PWAs priority:M
-    task add Sign into and sync Brave project:setup priority:M
     task add Configure 1Password project:setup priority:M
 
-    task add Take a snapshot of system project:setup priority:L
     task add Download needed files from Proton Drive project:setup priority:L
     task add Configure VS Code settings project:dev priority:L
 fi
