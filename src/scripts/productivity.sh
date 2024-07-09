@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Notion
-if [[ ! -d "usr/local/Caskroom/notion/" ]]; then
+if [[ ! -d "/opt/homebrew/Caskroom/notion/" ]]; then
     brew install --cask notion
 fi
 
@@ -16,7 +16,7 @@ if [[ ! -d "usr/local/cellar/spectacle/" ]]; then
 fi
 
 # Standard Notes
-if [[ ! -d "usr/local/Caskroom/standard-notes/" ]]; then
+if [[ ! -d "/opt/homebrew/Caskroom/standard-notes/" ]]; then
     brew install --cask standard-notes
 fi
 
@@ -50,6 +50,6 @@ if [[ ! -d "$HOME/.task/themes/" ]]; then
 fi
 
 # Todoist
-if [[ -d "/usr/local/Caskroom/todoist/" ]]; then
+if [[ -d "/opt/homebrew/Caskroom/todoist/" ]]; then
     brew install --cask todoist
 fi
