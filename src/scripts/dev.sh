@@ -38,14 +38,8 @@ if [[ ! -d "/usr/local/cellar/nvm/" ]]; then
     brew install nvm
 fi
 
-# TODO: Python and pip
+# Python and pip
 brew install python@3.12
-
-### Frameworks ###
-
-# TODO: Install Angular
-
-# TODO: Install Vue.js
 
 ### Dev Tools ###
 
