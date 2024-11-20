@@ -15,11 +15,6 @@ if [[ ! -d "usr/local/cellar/spectacle/" ]]; then
     brew install spectacle
 fi
 
-# Standard Notes
-if [[ ! -d "/opt/homebrew/Caskroom/standard-notes/" ]]; then
-    brew install --cask standard-notes
-fi
-
 # Taskwarrior
 if [[ ! -d "usr/local/cellar/task/" ]]; then
     brew install task
