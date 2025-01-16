@@ -5,11 +5,6 @@ if [[ ! -d "usr/local/Caskroom/balena-etcher/" ]]; then
     brew install --cask balena-etcher
 fi
 
-# Kindle
-if [[ ! -d "usr/local/Caskroom/kindle/" ]]; then
-    brew install --cask kindle
-fi
-
 # Notion
 if [[ ! -d "usr/local/Caskroom/notion/" ]]; then
     brew install --cask notion
@@ -18,11 +13,6 @@ fi
 # Raycast
 if [[ ! -d "usr/local/cellar/raycast/" ]]; then
     brew install raycast
-fi
-
-# Spectacle
-if [[ ! -d "usr/local/cellar/spectacle/" ]]; then
-    brew install spectacle
 fi
 
 # Taskwarrior
