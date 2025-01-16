@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Spotify
-if [[ -d "usr/local/Caskroom/spotify/" ]]; then
+if [[ ! -d "usr/local/Caskroom/spotify/" ]]; then
     brew install --cask spotify
 fi
 

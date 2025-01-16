@@ -9,8 +9,16 @@ cat "$(pwd)/src/assets/wolf.txt"
 
 printf "\n\n============================================================================\n\n"
 
-printf \
-"Run the following to enable Docker daemon on startup:
+printf "\nPost-install Steps\n"
+
+printf "
+Download the following apps from the App Store.
+    - Kindle
+    - Perplexity
+"
+
+printf "
+Run the following to enable Docker daemon on startup:
     sudo systemctl start docker.service
     sudo systemctl enable docker.service
     sudo usermod -aG docker %s

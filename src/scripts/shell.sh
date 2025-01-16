@@ -11,21 +11,21 @@ sudo chsh -s $(which zsh)
 
 ### Install fonts ###
 
-# TODO: Install Awesome Terminal Fonts
+# Install Awesome Terminal Fonts
 brew install --cask font-awesome-terminal-fonts
 
-# TODO: Install Fira Code Fonts
+# Install Fira Code Fonts
 brew tap homebrew/cask-fonts
 brew install --cask font-fira-code
 
-# TODO: Install Meslo Nerd Fonts
+# Install Meslo Nerd Fonts
 brew install --cask font-meslo-lg-nerd-font
 
-# TODO: Install Powerline Fonts
+# Install Powerline Fonts
 brew tap homebrew/cask-fonts
 brew cask install font-powerline-symbols
 
-### TODO: Install oh-my-posh ###
+### Install oh-my-posh ###
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
 
 ### Zsh Plugins ###
