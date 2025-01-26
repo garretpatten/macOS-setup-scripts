@@ -9,6 +9,7 @@ fi
 
 sudo xcode-select --install
 sudo xcodebuild -license accept
+softwareupdate --all --install --force
 
 # Homebrew package manager
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
