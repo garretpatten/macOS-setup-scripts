@@ -12,17 +12,15 @@ printf "\n\n====================================================================
 printf "\nPost-install Steps\n"
 
 printf "
-Download the following apps from the App Store.
+Download the following apps from the App Store:
     - Kindle
     - Perplexity
 "
 
 printf "
-Run the following to enable Docker daemon on startup:
-    sudo systemctl start docker.service
-    sudo systemctl enable docker.service
-    sudo usermod -aG docker %s
-    newgrp docker\r" "$USER"
+Download the following apps from the web:
+    - Docker Desktop
+"
 
 printf "\n\n============================================================================\n\n\r"
 

@@ -25,7 +25,9 @@ if [[ ! -d "/usr/local/cellar/nvm/" ]]; then
 fi
 
 # Python and pip
-brew install python@3.12
+if [[ ! -d "/opt/homebrew/bin/python3/" ]]; then
+    brew install python@3.12
+fi
 
 ### Frameworks ###
 
@@ -35,7 +37,15 @@ brew install python@3.12
 
 ### Dev Tools ###
 
-# TODO: Install Docker and Docker-Compose
+# Docker
+if [[ ! -d "/opt/homebrew/bin/docker/" ]]; then
+    brew install docker
+fi
+
+# Docker Compose
+if [[ ! -d "/opt/homebrew/bin/docker/" ]]; then
+    brew install docker
+fi
 
 # GitHub CLI
 if [[ ! -d "/usr/local/cellar/gh/" ]]; then
