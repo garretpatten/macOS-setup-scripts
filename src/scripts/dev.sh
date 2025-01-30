@@ -80,4 +80,5 @@ fi
 # VS Code
 if [[ ! -d "/usr/local/Caskroom/visual-studio-code/" ]]; then
     brew install --cask "$app"
+    cp "$(pwd)/src/dotfiles/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
 fi
