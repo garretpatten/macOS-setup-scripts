@@ -54,8 +54,8 @@ if [[ ! -d "$HOME/.config/ghostty/" ]]; then
 fi
 
 # System
-chsh -s $(which zsh)
-sudo chsh -s $(which zsh)
+chsh -s "$(which zsh)"
+sudo chsh -s "$(which zsh)"
 
 # Z Shell
 cp "$(pwd)/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
