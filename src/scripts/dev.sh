@@ -1,56 +1,47 @@
 #!/bin/bash
 
-### Configuration ###
-
-# Git config
-if [[ ! -f "$HOME/.gitconfig" ]]; then
-    git config --global credential.helper store
-    git config --global http.postBuffer 157286400
-    git config --global pack.window 1
-    git config --global user.email "garret.patten@proton.me"
-    git config --global user.name "Garret Patten"
-    git config --global pull.rebase false
-fi
+source "$(pwd)/src/scripts/utils.sh"
 
 ### Runtimes ###
 
-# Node and npm
-if [[ ! -d "/usr/local/cellar/node/" ]]; then
+# Node, npm, and nvm
+if ! is_installed "node"; then
     brew install node
-fi
-
-# Node Version Manager
-if [[ ! -d "/usr/local/cellar/nvm/" ]]; then
     brew install nvm
 fi
 
 # Python and pip
-if [[ ! -d "/opt/homebrew/bin/python3/" ]]; then
+if ! is_installed "python3"; then
     brew install python@3.12
 fi
-
-### Frameworks ###
-
-# TODO: Install Angular
-
-# TODO: Install Vue.js
 
 ### Dev Tools ###
 
 # Docker
-if [[ ! -d "/opt/homebrew/bin/docker/" ]]; then
+if ! is_installed "docker"; then
     brew install docker
 fi
 
 # Docker Compose
-if [[ ! -d "/opt/homebrew/bin/docker/" ]]; then
+if ! is_installed "docker-compose"; then
     brew install docker
 fi
 
 # GitHub CLI
-if [[ ! -d "/usr/local/cellar/gh/" ]]; then
+if ! is_installed "gh"; then
     brew install gh
 fi
+
+# Neovim
+if ! is_installed "nvim"; then
+    brew install neovim
+fi
+
+# Packer
+git clone --depth 1 https://github.com/wbthomason/packer.nvim \
+ "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" || {
+    echo "Failed to clone https://github.com/wbthomason/packer.nvim" >> errors.log
+}
 
 # Postman
 if [[ ! -d "/usr/local/Caskroom/postman/" ]]; then
@@ -58,12 +49,12 @@ if [[ ! -d "/usr/local/Caskroom/postman/" ]]; then
 fi
 
 # Semgrep
-if [[ ! -d "/usr/local/cellar/semgrep/" ]]; then
+if ! is_installed "semgrep"; then
     brew install semgrep
 fi
 
 # Shellcheck
-if [[ ! -d "/usr/local/cellar/shellcheck/" ]]; then
+if ! is_installed "shellcheck"; then
     brew install shellcheck
 fi
 
@@ -77,8 +68,41 @@ if [[ ! -d "/usr/local/cellar/src-cli/" ]]; then
     brew install src-cli
 fi
 
+# Tree Sitter
+if ! is_installed "tree-sitter"; then
+    brew install tree-sitter
+fi
+
 # VS Code
 if [[ ! -d "/usr/local/Caskroom/visual-studio-code/" ]]; then
-    brew install --cask "$app"
+    brew install --cask visual-studio-code
     cp "$(pwd)/src/dotfiles/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+fi
+
+### Frameworks ###
+
+# Angular CLI
+if ! is_installed "ng"; then
+    brew install angular-cli
+fi
+
+### Configuration ###
+
+# Git
+if [[ ! -f "$HOME/.gitconfig" ]]; then
+    git config --global credential.helper store
+    git config --global http.postBuffer 157286400
+    git config --global pack.window 1
+    git config --global user.email "garret.patten@proton.me"
+    git config --global user.name "Garret Patten"
+    git config --global pull.rebase false
+fi
+
+# Neovim
+mkdir -p "$HOME/.config/nvim/"
+cp -r "$(pwd)/src/dotfiles/nvim/" "$HOME/.config/nvim/"
+
+# Vim
+if [[ ! -f "$HOME/.vimrc" ]]; then
+    cp "$(pwd)/src/dotfiles/vim/.vimrc" "$HOME/.vimrc"
 fi

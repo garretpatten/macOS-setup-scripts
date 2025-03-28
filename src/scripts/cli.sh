@@ -1,8 +1,10 @@
 #!/bin/bash
 
-cliTools=("bat" "curl" "exiftool" "eza" "fastfetch" "fd" "git" "htop" "jq" "neovim" "openvpn" "ripgrep" "tmux" "vim" "wget" "zsh")
-for tool in ${cliTools[@]}; do
-    if [[ ! -d "/usr/local/cellar/$tool/" ]]; then
+source "$(pwd)/src/scripts/utils.sh"
+
+cliTools=("bat" "curl" "eza" "fastfetch" "fd" "git" "htop" "jq" "ripgrep" "tmux" "vim" "wget")
+for tool in "${cliTools[@]}"; do
+    if ! is_installed "$tool"; then
         brew install "$tool"
     fi
 done

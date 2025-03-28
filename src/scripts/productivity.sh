@@ -5,6 +5,11 @@ if [[ ! -d "usr/local/Caskroom/balena-etcher/" ]]; then
     brew install --cask balena-etcher
 fi
 
+# Chat GPT
+if [[ ! -d "usr/local/Caskroom/chatgpt/" ]]; then
+    brew install --cask chatgpt
+fi
+
 # Notion
 if [[ ! -d "usr/local/Caskroom/notion/" ]]; then
     brew install --cask notion
@@ -23,11 +28,6 @@ fi
 # Raycast
 if [[ ! -d "usr/local/cellar/raycast/" ]]; then
     brew install raycast
-fi
-
-# Todoist
-if [[ ! -d "/usr/local/Caskroom/todoist/" ]]; then
-    brew install --cask todoist
 fi
 
 # Zoom

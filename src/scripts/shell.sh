@@ -1,40 +1,44 @@
 #!/bin/bash
 
-# Install Zsh
-if [[!  -d "usr/local/cellar/zsh/" ]]; then
+source "$(pwd)/src/scripts/utils.sh"
+
+### Shells ###
+
+# Z Shell
+if ! is_installed "zsh"; then
     brew install zsh
 fi
 
-# Change User Shells to Zsh
-chsh -s $(which zsh)
-sudo chsh -s $(which zsh)
+### Fonts ###
 
-### Install fonts ###
-
-# Install Awesome Terminal Fonts
+# Awesome Terminal Fonts
 brew install --cask font-awesome-terminal-fonts
 
-# Install Fira Code Fonts
+# Fira Code Fonts
 brew tap homebrew/cask-fonts
 brew install --cask font-fira-code
 
-# Install Meslo Nerd Fonts
+# Meslo Nerd Fonts
 brew install --cask font-meslo-lg-nerd-font
 
-# Install Powerline Fonts
+# Powerline Fonts
 brew tap homebrew/cask-fonts
 brew cask install font-powerline-symbols
 
-### Install oh-my-posh ###
+### Plugins ###
+
+# oh-my-posh
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
 
-### Zsh Plugins ###
+# Zsh Auto Suggestions
 brew install zsh-autosuggestions
+
+# Zsh Syntax Highlighting
 brew install zsh-syntax-highlighting
 
-### Terminal Configuration ###
+### Configuration ###
 
-# Configure Alacritty
+# Alacritty
 if [[ ! -d "$HOME/.config/alacritty/" ]]; then
     mkdir -p "$HOME/.config/alacritty"
     git clone https://github.com/alacritty/alacritty-theme "$HOME/.config/alacritty/"
@@ -42,5 +46,16 @@ if [[ ! -d "$HOME/.config/alacritty/" ]]; then
     cp "$(pwd)/src/dotfiles/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
 fi
 
-# Update ~/.zshrc
+# Ghostty
+if [[ ! -d "$HOME/.config/ghostty/" ]]; then
+    mkdir -p "$HOME/.config/ghostty"
+    touch "$HOME/.config/ghostty/config"
+    cp "$(pwd)/src/dotfiles/ghostty/config" "$HOME/.config/ghostty/config"
+fi
+
+# System
+chsh -s $(which zsh)
+sudo chsh -s $(which zsh)
+
+# Z Shell
 cp "$(pwd)/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
