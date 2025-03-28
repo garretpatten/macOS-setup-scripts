@@ -4,6 +4,11 @@ source "$(pwd)/src/scripts/utils.sh"
 
 ### Shells ###
 
+# Ghostty
+if ! is_installed "ghostty"; then
+    brew install ghostty
+fi
+
 # Z Shell
 if ! is_installed "zsh"; then
     brew install zsh
@@ -42,14 +47,6 @@ brew install zsh-autosuggestions
 brew install zsh-syntax-highlighting
 
 ### Configuration ###
-
-# Alacritty
-if [[ ! -d "$HOME/.config/alacritty/" ]]; then
-    mkdir -p "$HOME/.config/alacritty"
-    git clone https://github.com/alacritty/alacritty-theme "$HOME/.config/alacritty/"
-    touch "$HOME/.config/alacritty/alacritty.toml"
-    cp "$(pwd)/src/dotfiles/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
-fi
 
 # Ghostty
 if [[ ! -d "$HOME/.config/ghostty/" ]]; then

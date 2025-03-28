@@ -36,7 +36,6 @@ bash src/scripts/master.sh
 
 ## Configurations
 
-- Alacritty
 - Ghostty
 - Git
 - Mac OS Firewall
@@ -128,6 +127,7 @@ bash src/scripts/master.sh
 
 ### Shell
 
+- Ghostty
 - oh-my-posh
 - zsh
 - Zsh Auto Suggestions
