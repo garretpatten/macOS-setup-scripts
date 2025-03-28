@@ -5,31 +5,31 @@ This repository contains a collections of scripts that I use to set up my person
 
 ## How to Use
 
-### Clone the repository
+Clone the repository
 
 ```bash
 git clone https://github.com/garretpatten/macOS-setup-scripts
 ```
 
-### Checkout the root of the project
+Checkout the root of the project
 
 ```bash
 cd macOS-setup-scripts
 ```
 
-### Update submodules
+Update submodules
 
 ```bash
 git submodule update --init --remote --recursive src/dotfiles/
 ```
 
-### Make the scripts executable
+Make the scripts executable
 
 ```bash
 chmod +x src/scripts/*.sh
 ```
 
-### Run the master script
+Run the master script
 
 ```bash
 bash src/scripts/master.sh
@@ -50,7 +50,7 @@ bash src/scripts/master.sh
 
 #### CLI
 
-- docker, docker-compose, gh, neovim, node, npm, nvm, python, pip, semgrep, shellcheck, src-cli
+docker, docker-compose, gh, neovim, node, npm, nvm, python, pip, semgrep, shellcheck, src-cli
 
 #### GUI
 
@@ -60,18 +60,7 @@ bash src/scripts/master.sh
 
 ### General CLI Tools
 
-- bat
-- curl
-- eza
-- fastfetch
-- fd
-- git
-- htop
-- jq
-- ripgrep
-- tmux
-- vim
-- wget
+bat, curl, eza, fastfetch, fd, git, htop, jq, ripgrep, tmux, vim, wget
 
 ### Media
 
@@ -107,22 +96,14 @@ bash src/scripts/master.sh
 #### GUI
 
 - 1Password
-- Burp Suite
+- Burp Suit
 - OWASP ZAP
 - Proton VPN
 - Signal Messenger
 
 ## Configurations
 
-- Alacritty
-- Ghostty
-- Git
-- Mac OS Firewall
-- Neovim
-- System
-- Vim
-- VS Code
-- Z Shell
+Alacritty, Ghostty, Git, Mac OS Firewall, Neovim, System, Vim, VS Code, Z Shell
 
 ### Shell
 
