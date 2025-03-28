@@ -42,6 +42,7 @@ bash src/scripts/master.sh
 - Mac OS Firewall
 - Neovim
 - System
+- Tmux
 - Vim
 - VS Code
 - Z Shell

@@ -27,8 +27,13 @@ brew cask install font-powerline-symbols
 
 ### Plugins ###
 
-# oh-my-posh
+# Oh-my-posh
 brew install jandedobbeleer/oh-my-posh/oh-my-posh
+
+# Tmux
+if ! is_installed "tmux"; then
+    brew install tmux
+fi
 
 # Zsh Auto Suggestions
 brew install zsh-autosuggestions
@@ -57,5 +62,14 @@ fi
 chsh -s "$(which zsh)"
 sudo chsh -s "$(which zsh)"
 
+# Tmux
+if [[ ! -f "$HOME/.tmux.conf" ]]; then
+    touch "$HOME/.tmux.conf"
+    cp "$(pwd)/src/dotfiles/tmux/.tmux.conf" "$HOME/.tmux.conf"
+fi
+
 # Z Shell
-cp "$(pwd)/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
+if [[ ! -f "$HOME/.zshrc" ]]; then
+    touch "$HOME/.zshrc"
+    cp "$(pwd)/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
+fi
