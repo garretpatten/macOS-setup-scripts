@@ -1,7 +1,6 @@
 # Mac OS Setup Scripts
-This repository contains a collections of scripts that I use to set up my personal Mac OS environments.
 
-# Instructions
+This repository contains a collections of scripts that I use to set up my personal Mac OS environments.
 
 ## How to Use
 
@@ -35,7 +34,17 @@ Run the master script
 bash src/scripts/master.sh
 ```
 
-# Information
+## Configurations
+
+- Alacritty
+- Ghostty
+- Git
+- Mac OS Firewall
+- Neovim
+- System
+- Vim
+- VS Code
+- Z Shell
 
 ## Downloads
 
@@ -48,23 +57,45 @@ bash src/scripts/master.sh
 
 ### Development
 
-#### CLI
-
-docker, docker-compose, gh, neovim, node, npm, nvm, python, pip, semgrep, shellcheck, src-cli
-
-#### GUI
-
+- docker
+- docker-compose
+- gh
+- neovim
+- nod
+- npm
+- nvm
 - Postman
+- python
+- pip
+- semgrep
+- shellcheck
 - Sourcegraph
+- src-cli
 - VS Code
+
+### Fonts
+
+- Awesome Terminal Fonts
+- Fira Code Fonts
+- Meslo Nerd Fonts
+- Powerline Fonts (and Symbols)
 
 ### General CLI Tools
 
-bat, curl, eza, fastfetch, fd, git, htop, jq, ripgrep, tmux, vim, wget
+- bat
+- curl
+- eza
+- fastfetch
+- fd
+- git
+- htop
+- jq
+- ripgrep
+- tmux
+- vim
+- wget
 
 ### Media
-
-#### GUI
 
 - Brave
 - Duck Duck Go
@@ -72,8 +103,6 @@ bat, curl, eza, fastfetch, fd, git, htop, jq, ripgrep, tmux, vim, wget
 - VLC
 
 ### Productivity
-
-#### GUI
 
 - Balena Etcher
 - Chat GPT
@@ -85,42 +114,21 @@ bat, curl, eza, fastfetch, fd, git, htop, jq, ripgrep, tmux, vim, wget
 
 ### Security
 
-#### CLI
-
+- 1Password
+- Burp Suite
 - clamscan
 - exiftool
 - nmap
 - op
 - openvpn
-
-#### GUI
-
-- 1Password
-- Burp Suit
 - OWASP ZAP
 - Proton VPN
 - Signal Messenger
 
-## Configurations
-
-Alacritty, Ghostty, Git, Mac OS Firewall, Neovim, System, Vim, VS Code, Z Shell
-
 ### Shell
-
-#### CLI
 
 - oh-my-posh
 - zsh
-
-#### Fonts
-
-- Awesome Terminal Fonts
-- Fira Code Fonts
-- Meslo Nerd Fonts
-- Powerline Fonts (and Symbols)
-
-#### Plugins
-
 - Zsh Auto Suggestions
 - Zsh Syntax Highlighting
 
@@ -131,4 +139,4 @@ Alacritty, Ghostty, Git, Mac OS Firewall, Neovim, System, Vim, VS Code, Z Shell
 For questions, bug reports, or feature requests, please open an issue on this repository or contact the maintainer directly.
 
 ## License
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See full license at [LICENSE](./LICENSE).
+This project is licensed under the [MIT License](./LICENSE).
