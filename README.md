@@ -50,18 +50,7 @@ bash src/scripts/master.sh
 
 #### CLI
 
-- docker
-- docker-compose
-- gh
-- neovim
-- node
-- npm
-- nvm
-- python
-- pip
-- semgrep
-- shellcheck
-- src-cli
+- docker, docker-compose, gh, neovim, node, npm, nvm, python, pip, semgrep, shellcheck, src-cli
 
 #### GUI
 
