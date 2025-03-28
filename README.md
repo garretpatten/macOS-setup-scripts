@@ -137,7 +137,7 @@ bash src/scripts/master.sh
 
 [@garretpatten](https://github.com/garretpatten/)
 
-For questions, bug reports, or feature requests, please open an issue on this repository or contact the maintainer directly.
+*For questions, bug reports, or feature requests, please open an issue on this repository or contact the maintainer directly.*
 
 ## License
 This project is licensed under the [MIT License](./LICENSE).
