@@ -1,6 +1,13 @@
 #!/bin/bash
 
-# Xcode Command Line Tools Fresh Install
+# Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew analytics off
+
+# System updates
+brew update && brew upgrade && brew cleanup
+
+# X Code
 xcodePath="/Library/Developer/CommandLineTools/"
 
 if [[ -d "$xcodePath" ]]; then
@@ -10,10 +17,3 @@ fi
 sudo xcode-select --install
 sudo xcodebuild -license accept
 softwareupdate --all --install --force
-
-# Homebrew package manager
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew analytics off
-
-# System updates
-brew update && brew upgrade && brew cleanup
