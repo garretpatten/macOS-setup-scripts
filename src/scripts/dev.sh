@@ -7,7 +7,9 @@ source "$(pwd)/src/scripts/utils.sh"
 # Node, npm, and nvm
 if ! is_installed "node"; then
     brew install node
-    brew install nvm
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash || {
+        echo "Failed to install nvm." >> "$ERROR_FILE";
+    }
 fi
 
 # Python and pip
@@ -40,7 +42,7 @@ fi
 # Packer
 git clone --depth 1 https://github.com/wbthomason/packer.nvim \
  "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" || {
-    echo "Failed to clone https://github.com/wbthomason/packer.nvim" >> errors.log
+    echo "Failed to clone https://github.com/wbthomason/packer.nvim" >> "$ERROR_FILE";
 }
 
 # Postman
@@ -76,7 +78,9 @@ fi
 # VS Code
 if [[ ! -d "/usr/local/Caskroom/visual-studio-code/" ]]; then
     brew install --cask visual-studio-code
-    cp "$(pwd)/src/dotfiles/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+    cp "$(pwd)/src/dotfiles/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json" || {
+        echo "Failed to configure VS Code settings." >> "$ERROR_FILE";
+    }
 fi
 
 ### Frameworks ###
@@ -100,9 +104,13 @@ fi
 
 # Neovim
 mkdir -p "$HOME/.config/nvim/"
-cp -r "$(pwd)/src/dotfiles/nvim/" "$HOME/.config/nvim/"
+cp -r "$(pwd)/src/dotfiles/nvim/" "$HOME/.config/nvim/" || {
+    echo "Failed to configure Neovim settings." >> "$ERROR_FILE";
+}
 
 # Vim
 if [[ ! -f "$HOME/.vimrc" ]]; then
-    cp "$(pwd)/src/dotfiles/vim/.vimrc" "$HOME/.vimrc"
+    cp "$(pwd)/src/dotfiles/vim/.vimrc" "$HOME/.vimrc" || {
+        echo "Failed to configure Vim settings." >> "$ERROR_FILE";
+    }
 fi
