@@ -19,6 +19,12 @@ fi
 
 ### Dev Tools ###
 
+# Colima
+if ! is_installed "colima"; then
+    brew install colima
+    colima start
+fi
+
 # Docker
 if ! is_installed "docker"; then
     brew install docker
@@ -26,7 +32,7 @@ fi
 
 # Docker Compose
 if ! is_installed "docker-compose"; then
-    brew install docker
+    brew install docker-compose
 fi
 
 # GitHub CLI

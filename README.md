@@ -57,6 +57,7 @@ bash src/scripts/master.sh
 
 ### Development
 
+- colima
 - docker
 - docker-compose
 - gh
