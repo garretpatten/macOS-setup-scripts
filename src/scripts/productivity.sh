@@ -11,7 +11,7 @@ print_section "Installing Productivity Applications"
 
 # Define productivity applications to install
 productivity_casks=(
-    "balena-etcher"
+    "balenaetcher"
     "chatgpt"
     "notion"
     "proton-drive"

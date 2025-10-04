@@ -246,8 +246,8 @@ copy_file() {
     local description="${3:-file}"
 
     if ! file_exists "$source"; then
-        log_error "Source $description does not exist: $source"
-        return 1
+        log_warn "Source $description does not exist: $source - skipping copy"
+        return 0
     fi
 
     # Create destination directory if it doesn't exist
@@ -271,8 +271,8 @@ copy_directory() {
     local description="${3:-directory}"
 
     if ! directory_exists "$source"; then
-        log_error "Source $description does not exist: $source"
-        return 1
+        log_warn "Source $description does not exist: $source - skipping copy"
+        return 0
     fi
 
     # Create destination directory if it doesn't exist

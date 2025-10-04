@@ -66,7 +66,32 @@ ensure_directory "$HOME/.config/nvim" "Neovim config directory"
 copy_directory "$PROJECT_ROOT/src/dotfiles/nvim" "$HOME/.config/nvim" "Neovim configuration"
 
 # Configure Vim
-copy_file "$PROJECT_ROOT/src/dotfiles/vim/.vimrc" "$HOME/.vimrc" "Vim configuration"
+if file_exists "$PROJECT_ROOT/src/dotfiles/vim/.vimrc"; then
+    copy_file "$PROJECT_ROOT/src/dotfiles/vim/.vimrc" "$HOME/.vimrc" "Vim configuration"
+else
+    log_warn "Vim configuration not found, creating basic config"
+    cat > "$HOME/.vimrc" << 'EOF'
+" Basic vim configuration
+set number
+set relativenumber
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+set smartindent
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+set showmatch
+set ruler
+set laststatus=2
+set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ [BUFFER=%n]\ %{strftime('%c')}
+syntax on
+filetype plugin indent on
+EOF
+    log_info "Created basic vim configuration"
+fi
 
 # Configure VS Code
 ensure_directory "$HOME/Library/Application Support/Code/User" "VS Code config directory"

@@ -49,10 +49,50 @@ ensure_directory "$HOME/.config/ghostty" "Ghostty config directory"
 copy_file "$PROJECT_ROOT/src/dotfiles/ghostty/config" "$HOME/.config/ghostty/config" "Ghostty config"
 
 # Tmux configuration
-copy_file "$PROJECT_ROOT/src/dotfiles/tmux/.tmux.conf" "$HOME/.tmux.conf" "Tmux config"
+if file_exists "$PROJECT_ROOT/src/dotfiles/tmux/.tmux.conf"; then
+    copy_file "$PROJECT_ROOT/src/dotfiles/tmux/.tmux.conf" "$HOME/.tmux.conf" "Tmux config"
+else
+    log_warn "Tmux configuration not found, creating basic config"
+    cat > "$HOME/.tmux.conf" << 'EOF'
+# Basic tmux configuration
+set -g default-terminal "screen-256color"
+set -g mouse on
+set -g history-limit 10000
+set -g base-index 1
+setw -g pane-base-index 1
+bind-key C-a send-prefix
+bind-key | split-window -h
+bind-key - split-window -v
+EOF
+    log_info "Created basic tmux configuration"
+fi
 
 # Zsh configuration
-copy_file "$PROJECT_ROOT/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc" "Zsh config"
+if file_exists "$PROJECT_ROOT/src/dotfiles/oh-my-posh/.zshrc"; then
+    copy_file "$PROJECT_ROOT/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc" "Zsh config"
+else
+    log_warn "Zsh configuration not found, creating basic config"
+    cat > "$HOME/.zshrc" << 'EOF'
+# Basic zsh configuration
+export PATH="/opt/homebrew/bin:$PATH"
+
+# Oh My Posh
+eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/jandedobbeleer.omp.json)"
+
+# Zsh plugins
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Aliases
+alias ll="eza -la"
+alias la="eza -a"
+alias l="eza"
+alias cat="bat"
+alias find="fd"
+alias grep="rg"
+EOF
+    log_info "Created basic zsh configuration"
+fi
 
 # Change default shell to zsh
 log_info "Changing default shell to zsh..."

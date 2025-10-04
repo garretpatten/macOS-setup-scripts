@@ -8,9 +8,9 @@ check_macos
 
 print_section "Organizing Home Directory"
 
-# Remove unneeded directories
+# Remove unneeded directories (skip Public as it may be protected by macOS)
 log_info "Removing unneeded directories..."
-directories_to_remove=("Public" "Templates")
+directories_to_remove=("Templates")
 
 for directory in "${directories_to_remove[@]}"; do
     if directory_exists "$HOME/$directory"; then
