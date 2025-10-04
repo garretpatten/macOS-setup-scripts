@@ -1,74 +1,68 @@
 #!/bin/bash
 
-source "$(pwd)/src/scripts/utils.sh"
+# Source common functions
+source "$(dirname "$0")/common.sh"
+
+# Check prerequisites
+check_macos
+check_homebrew
+
+print_section "Installing Security Tools"
 
 ### Authentication & Secrets Management ###
+log_info "Installing authentication and secrets management tools..."
 
-# 1Password and 1Password CLI
-caskApps=("1password" "1password-cli")
-for app in "${caskApps[@]}"; do
-    if [[ ! -d "usr/local/Caskroom/$app/" ]]; then
-        brew install --cask "$app"
-    fi
-done
+auth_casks=(
+    "1password"
+    "1password-cli"
+)
+
+install_brew_casks_parallel "${auth_casks[@]}"
 
 ### Defensive Security ###
+log_info "Installing defensive security tools..."
 
-# Clam AV
-brew install clamav
+defensive_formulas=(
+    "clamav"
+    "openvpn"
+)
 
-# Firewall
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+defensive_casks=(
+    "protonvpn"
+    "signal"
+)
 
-# Open VPN
-if ! is_installed "openvpn"; then
-    brew install openvpn
-fi
+install_brew_formulas_parallel "${defensive_formulas[@]}"
+install_brew_casks_parallel "${defensive_casks[@]}"
 
-# Proton VPN Client
-if [[ ! -d "usr/local/Caskroom/protonvpn/" ]]; then
-    brew install --cask protonvpn
-fi
-
-# TODO: Install Proton VPN CLI
-
-# Signal Messenger
-if [[ ! -d "usr/local/Caskroom/signal/" ]]; then
-    brew install --cask signal
-fi
+# Configure firewall
+log_info "Configuring macOS firewall..."
+execute_command "sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on" "Enable macOS firewall"
 
 ### Offensive Security ###
+log_info "Installing offensive security tools..."
 
-# Burp Suite
-if [[ ! -d "usr/local/Caskroom/burp-suite/" ]]; then
-    brew install --cask burp-suite
-fi
+offensive_formulas=(
+    "exiftool"
+    "nmap"
+)
 
-# EXIF Tool
-if ! is_installed "exiftool"; then
-    brew install exiftool
-fi
+offensive_casks=(
+    "burp-suite"
+    "zap"
+)
 
-# Network Mapper
-if ! is_installed "nmap"; then
-    brew install nmap
-fi
+install_brew_formulas_parallel "${offensive_formulas[@]}"
+install_brew_casks_parallel "${offensive_casks[@]}"
 
-# Payloads All the Things
-if [[ ! -d "$HOME/Hacking/PayloadsAllTheThings" ]]; then
-    git clone https://github.com/swisskyrepo/PayloadsAllTheThings "$HOME/Hacking/" || {
-        echo "Failed to clone https://github.com/swisskyrepo/PayloadsAllTheThings" >> "$ERROR_FILE";
-    }
-fi
+### Security Repositories ###
+log_info "Cloning security repositories..."
 
-# SecLists
-if [[ ! -d "$HOME/Hacking/PayloadsAllTheThings" ]]; then
-    git clone https://github.com/danielmiessler/SecLists "$HOME/Hacking/" || {
-        echo "https://github.com/danielmiessler/SecLists" >> "$ERROR_FILE";
-    }
-fi
+# Ensure Hacking directory exists
+ensure_directory "$HOME/Hacking" "Hacking directory"
 
-# ZAP
-if [[ ! -d "usr/local/Caskroom/zap/" ]]; then
-    brew install --cask zap
-fi
+# Clone security repositories
+clone_repository "https://github.com/swisskyrepo/PayloadsAllTheThings" "$HOME/Hacking/PayloadsAllTheThings" "PayloadsAllTheThings"
+clone_repository "https://github.com/danielmiessler/SecLists" "$HOME/Hacking/SecLists" "SecLists"
+
+print_completion "Security Tools Installation Complete"

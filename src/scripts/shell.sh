@@ -1,72 +1,62 @@
 #!/bin/bash
 
-source "$(pwd)/src/scripts/utils.sh"
+# Source common functions
+source "$(dirname "$0")/common.sh"
+
+# Check prerequisites
+check_macos
+check_homebrew
+
+print_section "Installing Shell and Terminal Tools"
 
 ### Shells ###
+log_info "Installing shell applications..."
 
-# Ghostty
-if ! is_installed "ghostty"; then
-    brew install ghostty
-fi
+shell_formulas=(
+    "ghostty"
+    "zsh"
+    "tmux"
+    "zsh-autosuggestions"
+    "zsh-syntax-highlighting"
+)
 
-# Z Shell
-if ! is_installed "zsh"; then
-    brew install zsh
-fi
+# Install oh-my-posh from custom tap
+log_info "Installing oh-my-posh..."
+execute_command "brew install jandedobbeleer/oh-my-posh/oh-my-posh" "oh-my-posh"
+
+install_brew_formulas_parallel "${shell_formulas[@]}"
 
 ### Fonts ###
+log_info "Installing terminal fonts..."
 
-# Awesome Terminal Fonts
-brew install --cask font-awesome-terminal-fonts
+# Add font tap
+execute_command "brew tap homebrew/cask-fonts" "Add font tap"
 
-# Fira Code Fonts
-brew tap homebrew/cask-fonts
-brew install --cask font-fira-code
+font_casks=(
+    "font-awesome-terminal-fonts"
+    "font-fira-code"
+    "font-meslo-lg-nerd-font"
+    "font-powerline-symbols"
+)
 
-# Meslo Nerd Fonts
-brew install --cask font-meslo-lg-nerd-font
-
-# Powerline Fonts
-brew tap homebrew/cask-fonts
-brew cask install font-powerline-symbols
-
-### Plugins ###
-
-# Oh-my-posh
-brew install jandedobbeleer/oh-my-posh/oh-my-posh
-
-# Tmux
-if ! is_installed "tmux"; then
-    brew install tmux
-fi
-
-# Zsh Auto Suggestions
-brew install zsh-autosuggestions
-
-# Zsh Syntax Highlighting
-brew install zsh-syntax-highlighting
+install_brew_casks_parallel "${font_casks[@]}"
 
 ### Configuration ###
+log_info "Configuring shell and terminal applications..."
 
-# Ghostty
-if [[ ! -d "$HOME/.config/ghostty/" ]]; then
-    mkdir -p "$HOME/.config/ghostty"
-    touch "$HOME/.config/ghostty/config"
-    cp "$(pwd)/src/dotfiles/ghostty/config" "$HOME/.config/ghostty/config"
-fi
+# Ghostty configuration
+ensure_directory "$HOME/.config/ghostty" "Ghostty config directory"
+copy_file "$PROJECT_ROOT/src/dotfiles/ghostty/config" "$HOME/.config/ghostty/config" "Ghostty config"
 
-# System
-chsh -s "$(which zsh)"
-sudo chsh -s "$(which zsh)"
+# Tmux configuration
+copy_file "$PROJECT_ROOT/src/dotfiles/tmux/.tmux.conf" "$HOME/.tmux.conf" "Tmux config"
 
-# Tmux
-if [[ ! -f "$HOME/.tmux.conf" ]]; then
-    touch "$HOME/.tmux.conf"
-    cp "$(pwd)/src/dotfiles/tmux/.tmux.conf" "$HOME/.tmux.conf"
-fi
+# Zsh configuration
+copy_file "$PROJECT_ROOT/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc" "Zsh config"
 
-# Z Shell
-if [[ ! -f "$HOME/.zshrc" ]]; then
-    touch "$HOME/.zshrc"
-    cp "$(pwd)/src/dotfiles/oh-my-posh/.zshrc" "$HOME/.zshrc"
-fi
+# Change default shell to zsh
+log_info "Changing default shell to zsh..."
+execute_command "chsh -s $(which zsh)" "Change user shell to zsh"
+execute_command "sudo chsh -s $(which zsh)" "Change root shell to zsh"
+
+print_completion "Shell and Terminal Tools Installation Complete"

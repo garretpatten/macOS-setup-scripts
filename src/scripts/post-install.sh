@@ -1,28 +1,37 @@
 #!/bin/bash
 
-# System updates
-brew update && brew upgrade && brew cleanup
+# Source common functions
+source "$(dirname "$0")/common.sh"
 
-printf "\n\n============================================================================\n\n"
+# Check prerequisites
+check_macos
+check_homebrew
 
-cat "$(pwd)/src/assets/wolf.txt"
+print_section "Post-Installation Cleanup"
 
-printf "\n\n============================================================================\n\n"
+# Final system updates
+log_info "Performing final system updates..."
+init_homebrew
 
-printf "\nPost-install Steps\n"
+# Display completion message
+print_section "Installation Complete"
 
-printf "
-Download the following apps from the App Store:
-    - Kindle
-    - Perplexity
-"
+# Display wolf ASCII art
+if file_exists "$PROJECT_ROOT/src/assets/wolf.txt"; then
+    cat "$PROJECT_ROOT/src/assets/wolf.txt"
+    echo
+fi
 
-printf "
-Download the following apps from the web:
-    - Docker Desktop
-"
+# Display manual installation steps
+log_info "Manual Installation Steps Required:"
+echo
+echo "Download the following apps from the App Store:"
+echo "    - Kindle"
+echo "    - Perplexity"
+echo
+echo "Download the following apps from the web:"
+echo "    - Docker Desktop"
+echo
 
-printf "\n\n============================================================================\n\n\r"
-
-printf "Cheers -- system setup is now complete.\n\r"
-printf "Log out and log back in to complete shell change.\n"
+print_completion "System setup is now complete!"
+log_info "Log out and log back in to complete shell change."

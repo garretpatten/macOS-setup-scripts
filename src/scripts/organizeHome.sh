@@ -1,17 +1,32 @@
 #!/bin/bash
 
+# Source common functions
+source "$(dirname "$0")/common.sh"
+
+# Check prerequisites
+check_macos
+
+print_section "Organizing Home Directory"
+
 # Remove unneeded directories
-directoriesToRemove=("Public" "Templates")
-for directoryToRemove in "${directoriesToRemove[@]}"; do
-    if [[ ! -d "$HOME/$directoryToRemove/" ]]; then
-        rmdir "$HOME/$directoryToRemove"
+log_info "Removing unneeded directories..."
+directories_to_remove=("Public" "Templates")
+
+for directory in "${directories_to_remove[@]}"; do
+    if directory_exists "$HOME/$directory"; then
+        log_info "Removing directory: $directory"
+        execute_command "rmdir '$HOME/$directory'" "Remove $directory directory"
+    else
+        log_debug "Directory $directory does not exist, skipping"
     fi
 done
 
-# Add needed directories
-directoriesToCreate=("Books" "Games" "Hacking" "Projects")
-for directoryToCreate in "${directoriesToCreate[@]}"; do
-    if [[ ! -d "$HOME/$directoryToCreate/" ]]; then
-        mkdir "$HOME/$directoryToCreate"
-    fi
+# Create needed directories
+log_info "Creating needed directories..."
+directories_to_create=("Books" "Games" "Hacking" "Projects")
+
+for directory in "${directories_to_create[@]}"; do
+    ensure_directory "$HOME/$directory" "$directory directory"
 done
+
+print_completion "Home Directory Organization Complete"

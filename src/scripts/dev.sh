@@ -1,122 +1,86 @@
 #!/bin/bash
 
-source "$(pwd)/src/scripts/utils.sh"
+# Source common functions
+source "$(dirname "$0")/common.sh"
+
+# Check prerequisites
+check_macos
+check_homebrew
+
+print_section "Installing Development Tools"
 
 ### Runtimes ###
+log_info "Installing development runtimes..."
 
-# Node, npm, and nvm
-if ! is_installed "node"; then
-    brew install node
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash || {
-        echo "Failed to install nvm." >> "$ERROR_FILE";
-    }
-fi
+runtime_formulas=(
+    "node"
+    "python@3.12"
+)
 
-# Python and pip
-if ! is_installed "python3"; then
-    brew install python@3.12
-fi
+install_brew_formulas_parallel "${runtime_formulas[@]}"
 
-### Dev Tools ###
+# Install NVM
+log_info "Installing NVM..."
+execute_command "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash" "NVM installation"
 
-# Colima
-if ! is_installed "colima"; then
-    brew install colima
-    colima start
-fi
+### Development Tools ###
+log_info "Installing development tools..."
 
-# Docker
-if ! is_installed "docker"; then
-    brew install docker
-fi
+dev_formulas=(
+    "colima"
+    "docker"
+    "docker-compose"
+    "gh"
+    "neovim"
+    "semgrep"
+    "shellcheck"
+    "tree-sitter"
+    "angular-cli"
+)
 
-# Docker Compose
-if ! is_installed "docker-compose"; then
-    brew install docker-compose
-fi
+dev_casks=(
+    "postman"
+    "visual-studio-code"
+)
 
-# GitHub CLI
-if ! is_installed "gh"; then
-    brew install gh
-fi
+# Install from custom taps
+log_info "Installing tools from custom taps..."
+execute_command "brew install sourcegraph/app/sourcegraph" "Sourcegraph App"
+execute_command "brew install src-cli" "Sourcegraph CLI"
 
-# Neovim
-if ! is_installed "nvim"; then
-    brew install neovim
-fi
+install_brew_formulas_parallel "${dev_formulas[@]}"
+install_brew_casks_parallel "${dev_casks[@]}"
 
-# Packer
-git clone --depth 1 https://github.com/wbthomason/packer.nvim \
- "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" || {
-    echo "Failed to clone https://github.com/wbthomason/packer.nvim" >> "$ERROR_FILE";
-}
+# Start Colima
+log_info "Starting Colima..."
+execute_command "colima start" "Start Colima"
 
-# Postman
-if [[ ! -d "/usr/local/Caskroom/postman/" ]]; then
-    brew install --cask postman
-fi
+### Editor Configuration ###
+log_info "Configuring editors..."
 
-# Semgrep
-if ! is_installed "semgrep"; then
-    brew install semgrep
-fi
+# Install Packer for Neovim
+clone_repository "https://github.com/wbthomason/packer.nvim" "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" "Packer.nvim"
 
-# Shellcheck
-if ! is_installed "shellcheck"; then
-    brew install shellcheck
-fi
+# Configure Neovim
+ensure_directory "$HOME/.config/nvim" "Neovim config directory"
+copy_directory "$PROJECT_ROOT/src/dotfiles/nvim" "$HOME/.config/nvim" "Neovim configuration"
 
-# Sourcegraph App
-if [[ ! -d "/usr/local/cellar/sourcegraph/" ]]; then
-    brew install sourcegraph/app/sourcegraph
-fi
+# Configure Vim
+copy_file "$PROJECT_ROOT/src/dotfiles/vim/.vimrc" "$HOME/.vimrc" "Vim configuration"
 
-# Sourcegraph CLI
-if [[ ! -d "/usr/local/cellar/src-cli/" ]]; then
-    brew install src-cli
-fi
+# Configure VS Code
+ensure_directory "$HOME/Library/Application Support/Code/User" "VS Code config directory"
+copy_file "$PROJECT_ROOT/src/dotfiles/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json" "VS Code settings"
 
-# Tree Sitter
-if ! is_installed "tree-sitter"; then
-    brew install tree-sitter
-fi
+### Git Configuration ###
+log_info "Configuring Git..."
 
-# VS Code
-if [[ ! -d "/usr/local/Caskroom/visual-studio-code/" ]]; then
-    brew install --cask visual-studio-code
-    cp "$(pwd)/src/dotfiles/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json" || {
-        echo "Failed to configure VS Code settings." >> "$ERROR_FILE";
-    }
-fi
+# Configure Git settings
+execute_command "git config --global credential.helper store" "Git credential helper"
+execute_command "git config --global http.postBuffer 157286400" "Git HTTP buffer"
+execute_command "git config --global pack.window 1" "Git pack window"
+execute_command "git config --global user.email 'garret.patten@proton.me'" "Git user email"
+execute_command "git config --global user.name 'Garret Patten'" "Git user name"
+execute_command "git config --global pull.rebase false" "Git pull strategy"
 
-### Frameworks ###
-
-# Angular CLI
-if ! is_installed "ng"; then
-    brew install angular-cli
-fi
-
-### Configuration ###
-
-# Git
-if [[ ! -f "$HOME/.gitconfig" ]]; then
-    git config --global credential.helper store
-    git config --global http.postBuffer 157286400
-    git config --global pack.window 1
-    git config --global user.email "garret.patten@proton.me"
-    git config --global user.name "Garret Patten"
-    git config --global pull.rebase false
-fi
-
-# Neovim
-mkdir -p "$HOME/.config/nvim/"
-cp -r "$(pwd)/src/dotfiles/nvim/" "$HOME/.config/nvim/" || {
-    echo "Failed to configure Neovim settings." >> "$ERROR_FILE";
-}
-
-# Vim
-if [[ ! -f "$HOME/.vimrc" ]]; then
-    cp "$(pwd)/src/dotfiles/vim/.vimrc" "$HOME/.vimrc" || {
-        echo "Failed to configure Vim settings." >> "$ERROR_FILE";
-    }
-fi
+print_completion "Development Tools Installation Complete"

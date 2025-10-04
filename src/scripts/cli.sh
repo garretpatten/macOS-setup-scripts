@@ -1,10 +1,30 @@
 #!/bin/bash
 
-source "$(pwd)/src/scripts/utils.sh"
+# Source common functions
+source "$(dirname "$0")/common.sh"
 
-cliTools=("bat" "curl" "eza" "fastfetch" "fd" "git" "htop" "jq" "ripgrep" "vim" "wget")
-for tool in "${cliTools[@]}"; do
-    if ! is_installed "$tool"; then
-        brew install "$tool"
-    fi
-done
+# Check prerequisites
+check_macos
+check_homebrew
+
+print_section "Installing CLI Tools"
+
+# Define CLI tools to install
+cli_tools=(
+    "bat"
+    "curl"
+    "eza"
+    "fastfetch"
+    "fd"
+    "git"
+    "htop"
+    "jq"
+    "ripgrep"
+    "vim"
+    "wget"
+)
+
+# Install CLI tools in parallel
+install_brew_formulas_parallel "${cli_tools[@]}"
+
+print_completion "CLI Tools Installation Complete"

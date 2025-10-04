@@ -1,36 +1,30 @@
 #!/bin/bash
 
-# Balena-Etcher
-if [[ ! -d "usr/local/Caskroom/balena-etcher/" ]]; then
-    brew install --cask balena-etcher
-fi
+# Source common functions
+source "$(dirname "$0")/common.sh"
 
-# Chat GPT
-if [[ ! -d "usr/local/Caskroom/chatgpt/" ]]; then
-    brew install --cask chatgpt
-fi
+# Check prerequisites
+check_macos
+check_homebrew
 
-# Notion
-if [[ ! -d "usr/local/Caskroom/notion/" ]]; then
-    brew install --cask notion
-fi
+print_section "Installing Productivity Applications"
 
-# Proton Drive
-if [[ ! -d "usr/local/Caskroom/proton-drive/" ]]; then
-    brew install --cask proton-drive
-fi
+# Define productivity applications to install
+productivity_casks=(
+    "balena-etcher"
+    "chatgpt"
+    "notion"
+    "proton-drive"
+    "proton-mail"
+    "zoom"
+)
 
-# Proton Mail
-if [[ ! -d "usr/local/Caskroom/proton-mail/" ]]; then
-    brew install --cask proton-mail
-fi
+productivity_formulas=(
+    "raycast"
+)
 
-# Raycast
-if [[ ! -d "usr/local/cellar/raycast/" ]]; then
-    brew install raycast
-fi
+# Install productivity applications in parallel
+install_brew_casks_parallel "${productivity_casks[@]}"
+install_brew_formulas_parallel "${productivity_formulas[@]}"
 
-# Zoom
-if [[ ! -d "usr/local/Caskroom/zoom/" ]]; then
-    brew install --cask zoom
-fi
+print_completion "Productivity Applications Installation Complete"

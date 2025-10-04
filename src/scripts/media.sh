@@ -1,21 +1,23 @@
 #!/bin/bash
 
-# Brave
-if [[ ! -d "usr/local/Caskroom/brave-browser/" ]]; then
-    brew install --cask brave-browser
-fi
+# Source common functions
+source "$(dirname "$0")/common.sh"
 
-# DuckDuckGo
-if [[ ! -d "usr/local/Caskroom/duckduckgo/" ]]; then
-    brew install --cask duckduckgo
-fi
+# Check prerequisites
+check_macos
+check_homebrew
 
-# Spotify
-if [[ ! -d "usr/local/Caskroom/spotify/" ]]; then
-    brew install --cask spotify
-fi
+print_section "Installing Media Applications"
 
-# VLC
-if [[ ! -d "usr/local/Caskroom/vlc/" ]]; then
-    brew install --cask vlc
-fi
+# Define media applications to install
+media_apps=(
+    "brave-browser"
+    "duckduckgo"
+    "spotify"
+    "vlc"
+)
+
+# Install media applications in parallel
+install_brew_casks_parallel "${media_apps[@]}"
+
+print_completion "Media Applications Installation Complete"
