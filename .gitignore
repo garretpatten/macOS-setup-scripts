@@ -11,16 +11,13 @@ logs/
 ehthumbs.db
 Thumbs.db
 
+# Node
+node_modules/
+
 # Temporary files
 *.tmp
 *.temp
 *~
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
 
 # Backup files
 *.bak

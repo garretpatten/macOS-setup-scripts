@@ -284,7 +284,7 @@ The refactored scripts provide significant performance improvements:
 
 [@garretpatten](https://github.com/garretpatten/)
 
-*For questions, bug reports, or feature requests, please open an issue on this repository or contact the maintainer directly.*
+_For questions, bug reports, or feature requests, please open an issue on this repository or contact the maintainer directly._
 
 ## License
 
