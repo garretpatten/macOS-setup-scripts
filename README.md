@@ -1,15 +1,21 @@
 # macOS Setup Scripts
 
-A comprehensive, refactored collection of bash scripts for automated macOS environment setup. This repository provides a robust, parallel-execution system for installing development tools, applications, and configurations on M-series MacBooks.
+A comprehensive, refactored collection of bash scripts for automated macOS
+environment setup. This repository provides a robust, parallel-execution system
+for installing development tools, applications, and configurations on M-series
+MacBooks.
 
 ## ✨ Features
 
-- **🚀 Parallel Execution**: CLI tools, media apps, and productivity apps install simultaneously for faster setup
-- **📝 Comprehensive Logging**: Detailed logging system with error tracking and debug information
+- **🚀 Parallel Execution**: CLI tools, media apps, and productivity apps
+  install simultaneously for faster setup
+- **📝 Comprehensive Logging**: Detailed logging system with error tracking
+  and debug information
 - **🛡️ Error Handling**: Robust error handling with graceful failure recovery
 - **🔧 Modular Design**: Centralized common functions library for maintainable code
 - **⚡ Optimized Performance**: Designed specifically for M-series MacBooks with Homebrew
-- **🎯 Production Ready**: Tested and validated for reliable deployment across multiple machines
+- **🎯 Production Ready**: Tested and validated for reliable deployment
+  across multiple machines
 
 ## 🚀 Quick Start
 
@@ -261,7 +267,8 @@ To add new tools to the installation:
 
 1. **For Homebrew formulas**: Add to the appropriate array in the relevant script
 2. **For Homebrew casks**: Add to the appropriate array in the relevant script
-3. **For custom installations**: Add to the script using the `execute_command()` function
+3. **For custom installations**: Add to the script using the
+   `execute_command()` function
 
 ### Modifying Configurations
 
@@ -284,7 +291,8 @@ The refactored scripts provide significant performance improvements:
 
 [@garretpatten](https://github.com/garretpatten/)
 
-*For questions, bug reports, or feature requests, please open an issue on this repository or contact the maintainer directly.*
+_For questions, bug reports, or feature requests, please open an issue on
+this repository or contact the maintainer directly._
 
 ## License
 
