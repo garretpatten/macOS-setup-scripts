@@ -1,0 +1,67 @@
+name: 'Test Runner'
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    name: 'Test macOS Setup Scripts'
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Make scripts executable
+        run: chmod +x src/scripts/*.sh
+
+      - name: Run setup scripts
+        run: |
+          # Skip pre-install.sh as it installs OS updates and Xcode Command Line Tools,
+          # which takes too long in CI and is safe to assume works (Apple-provided commands).
+          # GitHub Actions macOS runners already have these installed.
+          cd src/scripts
+          source utils.sh
+          bash organizeHome.sh 2>>"$ERROR_LOG_FILE" || true
+          bash cli.sh 2>>"$ERROR_LOG_FILE" || true
+          bash media.sh 2>>"$ERROR_LOG_FILE" || true
+          bash productivity.sh 2>>"$ERROR_LOG_FILE" || true
+          bash dev.sh 2>>"$ERROR_LOG_FILE" || true
+          bash security.sh 2>>"$ERROR_LOG_FILE" || true
+          zsh shell.sh 2>>"$ERROR_LOG_FILE" || true
+          bash post-install.sh 2>>"$ERROR_LOG_FILE" || true
+
+      - name: Check error log
+        working-directory: ${{ github.workspace }}
+        run: |
+          # Only show actual errors, not warnings or informational messages
+          # Look for lines that indicate real failures:
+          # - Lines starting with "Error:" (not "Warning:")
+          # - Fatal errors (excluding expected network issues and colima VM errors in CI)
+          # - Exit status errors (excluding GitHub Actions messages)
+          # - Actual failure messages
+          ERROR_LOG="setup_errors.log"
+          if [[ -f "$ERROR_LOG" ]] && [[ -s "$ERROR_LOG" ]]; then
+            FILTERED_LOG=$(mktemp)
+            # First, remove function definitions and other noise
+            grep -v -E "(^[a-zA-Z_][a-zA-Z0-9_]* \(\)|^local |^mkdir -p|^cp |^curl |^if \[\[|^then|^else|^fi|^return |^export |^==> Fetching|^🍺.*was successfully installed)" "$ERROR_LOG" | \
+              # Extract only actual errors, excluding known CI-safe errors
+              grep -E "(^Error:|^\[.*\] \[ERROR\]|fatal error|fatal:.*error|exit status [1-9]|exit code [1-9]|Failed to|failed to|FAILED)" | \
+              grep -v -E "(fatal: unable to access.*Could not resolve host|chsh:.*Credentials|chsh:.*PAM|chsh:.*password|time=.*level=fatal.*colima|time=.*level=fatal.*error starting vm|Error: Process completed with exit code)" | \
+              grep -v '^[[:space:]]*$' > "$FILTERED_LOG" || true
+
+            if [[ -s "$FILTERED_LOG" ]]; then
+              echo "❌ Errors found:"
+              cat "$FILTERED_LOG"
+              rm -f "$FILTERED_LOG"
+              exit 1
+            fi
+            rm -f "$FILTERED_LOG"
+          fi
+

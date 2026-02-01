@@ -1,32 +1,6 @@
 #!/bin/bash
 
-# Source common functions
-source "$(dirname "$0")/common.sh"
+source "$(dirname "$0")/utils.sh"
 
-# Check prerequisites
-check_macos
-
-print_section "Organizing Home Directory"
-
-# Remove unneeded directories (skip Public as it may be protected by macOS)
-log_info "Removing unneeded directories..."
-directories_to_remove=("Templates")
-
-for directory in "${directories_to_remove[@]}"; do
-    if directory_exists "$HOME/$directory"; then
-        log_info "Removing directory: $directory"
-        execute_command "rmdir '$HOME/$directory'" "Remove $directory directory"
-    else
-        log_debug "Directory $directory does not exist, skipping"
-    fi
-done
-
-# Create needed directories
-log_info "Creating needed directories..."
-directories_to_create=("Books" "Games" "Hacking" "Projects")
-
-for directory in "${directories_to_create[@]}"; do
-    ensure_directory "$HOME/$directory" "$directory directory"
-done
-
-print_completion "Home Directory Organization Complete"
+[[ -d "$HOME/Templates" ]] && rmdir "$HOME/Templates" 2>>"$ERROR_LOG_FILE" || true
+mkdir -p "$HOME/Books" "$HOME/Games" "$HOME/Hacking" "$HOME/Projects" 2>>"$ERROR_LOG_FILE" || true
