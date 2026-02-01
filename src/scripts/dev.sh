@@ -7,7 +7,7 @@ brew install --cask postman visual-studio-code 2>>"$ERROR_LOG_FILE" || true
 brew install sourcegraph/app/sourcegraph 2>>"$ERROR_LOG_FILE" || true
 brew install src-cli 2>>"$ERROR_LOG_FILE" || true
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash 2>>"$ERROR_LOG_FILE" || true
+curl -sSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash 2>>"$ERROR_LOG_FILE" || true
 
 if [[ ! -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]]; then
     git clone https://github.com/wbthomason/packer.nvim "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" 2>>"$ERROR_LOG_FILE" || true
