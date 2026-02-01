@@ -1,40 +1,17 @@
 #!/bin/bash
 
-# Source common functions
-source "$(dirname "$0")/common.sh"
+source "$(dirname "$0")/utils.sh"
 
-# Check prerequisites
-check_macos
-
-print_section "Pre-Installation Setup"
-
-# Install Homebrew if not present
-if ! command_exists "brew"; then
-    log_info "Installing Homebrew..."
-    execute_command "/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"" "Homebrew installation"
-else
-    log_info "Homebrew is already installed"
+if ! command -v brew >/dev/null 2>&1; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" 2>>"$ERROR_LOG_FILE" || true
 fi
 
-# Initialize Homebrew
-init_homebrew
+brew update 2>>"$ERROR_LOG_FILE" || true
+brew upgrade 2>>"$ERROR_LOG_FILE" || true
+brew cleanup 2>>"$ERROR_LOG_FILE" || true
+brew analytics off 2>>"$ERROR_LOG_FILE" || true
 
-# Xcode Command Line Tools
-log_info "Setting up Xcode Command Line Tools..."
-
-xcode_path="/Library/Developer/CommandLineTools/"
-
-if directory_exists "$xcode_path"; then
-    log_info "Removing existing Command Line Tools..."
-    execute_command "sudo rm -rf '$xcode_path'" "Remove existing Command Line Tools"
-fi
-
-log_info "Installing Xcode Command Line Tools..."
-execute_command "sudo xcode-select --install" "Install Command Line Tools"
-execute_command "sudo xcodebuild -license accept" "Accept Xcode license"
-
-# System updates
-log_info "Installing system updates..."
-execute_command "softwareupdate --all --install --force" "System updates"
-
-print_completion "Pre-Installation Setup Complete"
+sudo rm -rf /Library/Developer/CommandLineTools/ 2>>"$ERROR_LOG_FILE" || true
+sudo xcode-select --install 2>>"$ERROR_LOG_FILE" || true
+sudo xcodebuild -license accept 2>>"$ERROR_LOG_FILE" || true
+softwareupdate --all --install --force 2>>"$ERROR_LOG_FILE" || true
