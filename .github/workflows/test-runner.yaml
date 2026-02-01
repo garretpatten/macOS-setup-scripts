@@ -23,8 +23,19 @@ jobs:
 
       - name: Run setup scripts
         run: |
+          # Skip pre-install.sh as it installs OS updates and Xcode Command Line Tools,
+          # which takes too long in CI and is safe to assume works (Apple-provided commands).
+          # GitHub Actions macOS runners already have these installed.
           cd src/scripts
-          bash master.sh || true
+          source utils.sh
+          bash organizeHome.sh 2>>"$ERROR_LOG_FILE" || true
+          bash cli.sh 2>>"$ERROR_LOG_FILE" || true
+          bash media.sh 2>>"$ERROR_LOG_FILE" || true
+          bash productivity.sh 2>>"$ERROR_LOG_FILE" || true
+          bash dev.sh 2>>"$ERROR_LOG_FILE" || true
+          bash security.sh 2>>"$ERROR_LOG_FILE" || true
+          zsh shell.sh 2>>"$ERROR_LOG_FILE" || true
+          bash post-install.sh 2>>"$ERROR_LOG_FILE" || true
 
       - name: Check error log
         working-directory: ${{ github.workspace }}
