@@ -2,7 +2,7 @@
 
 source "$(dirname "$0")/utils.sh"
 
-brew install node python@3.12 colima docker docker-compose gh neovim semgrep shellcheck tree-sitter angular-cli 2>>"$ERROR_LOG_FILE" || true
+brew install node python@3.12 colima docker docker-compose gh neovim podman semgrep shellcheck tree-sitter angular-cli 2>>"$ERROR_LOG_FILE" || true
 brew install --cask postman visual-studio-code 2>>"$ERROR_LOG_FILE" || true
 brew install sourcegraph/app/sourcegraph 2>>"$ERROR_LOG_FILE" || true
 brew install src-cli 2>>"$ERROR_LOG_FILE" || true
