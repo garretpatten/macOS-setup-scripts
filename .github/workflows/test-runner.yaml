@@ -65,4 +65,3 @@ jobs:
             fi
             rm -f "$FILTERED_LOG"
           fi
-
