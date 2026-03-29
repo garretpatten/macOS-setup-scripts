@@ -28,6 +28,7 @@ jobs:
           # GitHub Actions macOS runners already have these installed.
           cd src/scripts
           source utils.sh
+          bash system-config.sh 2>>"$ERROR_LOG_FILE" || true
           bash organizeHome.sh 2>>"$ERROR_LOG_FILE" || true
           bash cli.sh 2>>"$ERROR_LOG_FILE" || true
           bash media.sh 2>>"$ERROR_LOG_FILE" || true
