@@ -1,29 +1,21 @@
 # macOS Setup Scripts
 
-A comprehensive, refactored collection of bash scripts for automated macOS
-environment setup. This repository provides a robust, parallel-execution system
-for installing development tools, applications, and configurations on M-series
-MacBooks.
+Bash-based automation for provisioning a development-focused macOS environment on Apple Silicon (M-series) Macs: Homebrew installs, shell and dotfiles, and system-wide defaults.
 
-## ✨ Features
+## Features
 
-- **🚀 Parallel Execution**: CLI tools, media apps, and productivity apps
-  install simultaneously for faster setup
-- **📝 Comprehensive Logging**: Detailed logging system with error tracking
-  and debug information
-- **🛡️ Error Handling**: Robust error handling with graceful failure recovery
-- **🔧 Modular Design**: Centralized common functions library for maintainable code
-- **⚡ Optimized Performance**: Designed specifically for M-series MacBooks with Homebrew
-- **🎯 Production Ready**: Tested and validated for reliable deployment
-  across multiple machines
+- **Modular scripts**: Run the full stack with `master.sh` or run individual phases (CLI, dev, media, and so on).
+- **Shared helpers**: `utils.sh` centralizes paths, `log_error`, safe copy/download helpers, and a single error log path.
+- **System defaults**: `system-config.sh` applies appearance, input, Finder, Dock, Spotlight, Night Shift, security-related settings, and Apple Silicon–friendly `pmset` tuning (see below).
+- **CI**: GitHub Actions runs the scripts on `macos-latest` (with `pre-install.sh` skipped in the workflow for speed).
 
-## 🚀 Quick Start
+## Quick start
 
 ### Prerequisites
 
-- macOS (tested on recent versions)
-- Internet connection for downloads
-- Administrator privileges for system modifications
+- macOS (recent versions; scripts assume Darwin)
+- Network access for Homebrew and downloads
+- Administrator privileges when `sudo` is required (for example firewall, guest account, system Software Update plist, and `pmset` in `system-config.sh`)
 
 ### Installation
 
@@ -46,253 +38,132 @@ MacBooks.
    chmod +x src/scripts/*.sh
    ```
 
-4. **Run the complete setup**
+4. **Run the full setup**
 
    ```bash
    bash src/scripts/master.sh
    ```
 
-### Individual Components
+### Individual scripts
 
-You can also run individual setup components:
+Examples:
 
 ```bash
-# CLI tools only
+bash src/scripts/system-config.sh   # macOS defaults only (no Homebrew)
 bash src/scripts/cli.sh
-
-# Development tools only
 bash src/scripts/dev.sh
-
-# Media applications only
 bash src/scripts/media.sh
-
-# Security tools only
+bash src/scripts/productivity.sh
 bash src/scripts/security.sh
-
-# Shell configuration only
-bash src/scripts/shell.sh
+zsh src/scripts/shell.sh
+bash src/scripts/organizeHome.sh
 ```
 
-## 📁 Project Structure
+## Project structure
 
 ```text
 macOS-setup-scripts/
-├── .gitignore                 # Excludes log files from version control
+├── .github/workflows/
+│   └── test-runner.yaml      # CI: runs scripts on macOS runners
 ├── src/
 │   ├── scripts/
-│   │   ├── common.sh         # Centralized functions library
-│   │   ├── master.sh         # Main orchestration script
-│   │   ├── pre-install.sh    # System and Homebrew setup
-│   │   ├── post-install.sh   # Final cleanup and completion
-│   │   ├── cli.sh           # CLI tools (parallel execution)
-│   │   ├── dev.sh           # Development tools and configuration
-│   │   ├── media.sh         # Media applications (parallel execution)
-│   │   ├── productivity.sh  # Productivity applications (parallel execution)
-│   │   ├── security.sh      # Security tools and repositories
-│   │   ├── shell.sh         # Shell and terminal configuration
-│   │   └── organizeHome.sh  # Home directory organization
-│   ├── dotfiles/            # Configuration files
-│   └── assets/              # Additional resources
-├── logs/                    # Log files (auto-created)
-│   ├── errors.log          # Error log
-│   ├── install.log         # Installation progress
-│   └── debug.log           # Debug information
-└── test_setup.sh           # Validation script
+│   │   ├── utils.sh          # Paths, logging, safe copy/download helpers
+│   │   ├── master.sh         # Orchestrates all phases in order
+│   │   ├── pre-install.sh    # Homebrew, Xcode CLT, updates (skipped in CI)
+│   │   ├── system-config.sh  # defaults write, firewall, pmset, restarts Dock/Finder/mds
+│   │   ├── organizeHome.sh   # Home directory layout
+│   │   ├── cli.sh            # CLI Homebrew formulas
+│   │   ├── media.sh          # Media casks
+│   │   ├── productivity.sh   # Productivity casks
+│   │   ├── dev.sh            # Development tooling
+│   │   ├── security.sh       # Security tooling
+│   │   ├── shell.sh          # Shell / terminal setup (zsh)
+│   │   └── post-install.sh   # Final steps
+│   ├── dotfiles/
+│   └── assets/
+├── setup_errors.log          # Created at repo root when scripts run (gitignored)
+└── LICENSE
 ```
 
-## 🔧 Architecture
+## Execution flow (`master.sh`)
 
-### Common Functions Library (`common.sh`)
+1. `pre-install.sh` — Homebrew, Xcode Command Line Tools, system updates
+2. `system-config.sh` — macOS preferences and security-related system settings
+3. `organizeHome.sh` — home directory organization
+4. `cli.sh`, `media.sh`, `productivity.sh` — Homebrew formulas and casks
+5. `dev.sh` — development stack
+6. `security.sh` — security tools and related setup
+7. `shell.sh` — zsh and related configuration
+8. `post-install.sh` — cleanup and completion
 
-The refactored scripts use a centralized common functions library that provides:
+## `system-config.sh` (macOS defaults)
 
-- **Parallel Installation**: `install_brew_formulas_parallel()`, `install_brew_casks_parallel()`
-- **Logging System**: `log_error()`, `log_warn()`, `log_info()`, `log_debug()`
-- **Error Handling**: `execute_command()` with comprehensive error tracking
-- **File Operations**: `copy_file()`, `copy_directory()`, `clone_repository()`
-- **System Checks**: `check_macos()`, `check_homebrew()`, `command_exists()`
+This script writes user and system preferences and ends by restarting **Dock**, **Finder**, **SystemUIServer**, and **mds** so changes take effect. Highlights:
 
-### Execution Flow
+- **Appearance & UI**: Dark mode, small sidebar icons, reduced window animation for snappier feedback
+- **Input**: Classic scrolling, fast key repeat, tap to click, three-finger drag
+- **Security (single `sudo` session)**: Application Firewall on, stealth mode, guest account off, automatic macOS updates via `/Library/Preferences/com.apple.SoftwareUpdate`, plus `pmset` options suited to Apple Silicon (lid wake, TCP keepalive, Power Nap)
+- **Hardening & updates**: `.DS_Store` suppression on network/USB volumes, security-related Software Update toggles, Launch Services quarantine prompt off, screen-lock password settings
+- **Finder & screenshots**: Show extensions and hidden files, path bar, column view, screenshots under `~/Pictures/Screenshots` (directory created before setting the path)
+- **Dock & Spotlight**: Autohide, minimize into app icon, no recent apps, faster Dock animations; Spotlight category ordering
+- **Night Shift**: Enabled with sunset–sunrise-style schedule (strength and schedule keys as in the script)
 
-1. **Pre-installation**: Homebrew setup, Xcode Command Line Tools, system updates
-2. **Parallel Phase**: CLI tools, media apps, productivity apps install simultaneously
-3. **Sequential Phase**: Development tools, security tools (due to dependencies)
-4. **Configuration**: Shell setup, dotfiles, system configuration
-5. **Post-installation**: Final cleanup and completion
+Adjust `system-config.sh` if you prefer stricter security (for example keeping quarantine prompts) or different power-management values.
 
-## 📊 Logging System
+## Helpers (`utils.sh`)
 
-The refactored scripts include a comprehensive logging system:
+- `log_error` — stderr plus append to `setup_errors.log`
+- `ensure_directory` — `mkdir -p` with errors logged
+- `copy_file_safe` / `copy_directory_safe` — copy only when source exists and destination is missing
+- `download_file_safe` — `curl` with timeouts and validation
 
-- **Error Log** (`logs/errors.log`): All errors and failures
-- **Installation Log** (`logs/install.log`): Progress and successful operations
-- **Debug Log** (`logs/debug.log`): Detailed debugging information
-- **Console Output**: Colored, real-time progress updates
+Scripts append command errors with `2>>"$ERROR_LOG_FILE" || true` where appropriate so a single failure does not stop the whole run.
 
-## 🧪 Testing
+## Logging
 
-Run the validation script to ensure everything is working correctly:
+- **Error log**: `setup_errors.log` at the repository root (see `ERROR_LOG_FILE` in `utils.sh`). The file is gitignored (`*.log`).
+
+## Testing
+
+On push/PR to `master`, **Test Runner** (`.github/workflows/test-runner.yaml`) runs the scripts on a GitHub-hosted macOS runner. `pre-install.sh` is skipped there to avoid long Xcode/OS update steps; the workflow checks `setup_errors.log` for real failures.
+
+## What gets installed
+
+Illustrative list; see each `*.sh` for the exact Homebrew lines.
+
+### System configuration
+
+- Homebrew and Xcode Command Line Tools (via `pre-install.sh`)
+- Firewall, stealth mode, guest account, Software Update and `pmset` behavior (via `system-config.sh`)
+
+### Development, CLI, media, productivity, security
+
+Examples include Node/Python tooling, Docker-related tooling, editors, browsers, media apps, productivity and security casks, and repositories—aligned with `dev.sh`, `cli.sh`, `media.sh`, `productivity.sh`, and `security.sh`.
+
+### Configuration files
+
+Dotfiles and assets under `src/dotfiles/` and `src/assets/` as copied or referenced by the scripts.
+
+## Troubleshooting
+
+- **Permissions**: Some steps need `sudo`; you may be prompted once per `sudo` invocation (grouped in `system-config.sh` where possible).
+- **Homebrew**: `pre-install.sh` expects to install or use Homebrew if missing.
+- **Logs**: Inspect `setup_errors.log` at the repo root after a run.
 
 ```bash
-./test_setup.sh
+tail -n 50 setup_errors.log
 ```
 
-This will verify:
+## Customization
 
-- All scripts exist and are executable
-- Common functions library works correctly
-- Logging system is functional
-- File structure is correct
-
-## 📦 What Gets Installed
-
-### 🖥️ System Configuration
-
-- **Homebrew**: Package manager for macOS
-- **Xcode Command Line Tools**: Essential development tools
-- **macOS Firewall**: Security configuration
-- **System Updates**: Latest macOS updates
-
-### 🛠️ Development Tools
-
-- **Runtimes**: Node.js, Python 3.12, NVM
-- **Containers**: Docker, Docker Compose, Colima
-- **Version Control**: Git (with custom configuration), GitHub CLI
-- **Editors**: Neovim (with Packer), VS Code (with custom settings), Vim
-- **Code Analysis**: Semgrep, Shellcheck, Tree-sitter
-- **APIs**: Postman
-- **Search**: Sourcegraph (App + CLI)
-- **Frameworks**: Angular CLI
-
-### 🎨 Terminal & Shell
-
-- **Terminal**: Ghostty (with custom configuration)
-- **Shell**: Zsh (set as default)
-- **Prompt**: oh-my-posh
-- **Plugins**: Zsh Auto Suggestions, Zsh Syntax Highlighting
-- **Multiplexer**: Tmux (with custom configuration)
-- **Fonts**: Awesome Terminal Fonts, Fira Code, Meslo Nerd Font, Powerline Symbols
-
-### 🔧 CLI Tools
-
-- **File Operations**: bat, eza, fd, ripgrep
-- **System Info**: fastfetch, htop
-- **Network**: curl, wget
-- **Data Processing**: jq
-- **Text Editor**: vim
-
-### 🌐 Media Applications
-
-- **Browsers**: Brave, DuckDuckGo
-- **Media**: Spotify, VLC
-
-### 📈 Productivity Applications
-
-- **Utilities**: Balena Etcher, Raycast
-- **Communication**: Zoom
-- **Productivity**: Notion, ChatGPT
-- **Privacy**: Proton Drive, Proton Mail
-
-### 🔒 Security Tools
-
-- **Authentication**: 1Password (App + CLI)
-- **Privacy**: Proton VPN, Signal Messenger
-- **Network Security**: OpenVPN
-- **Penetration Testing**: Burp Suite, OWASP ZAP
-- **Analysis**: ClamAV, EXIFtool, Nmap
-- **Repositories**: PayloadsAllTheThings, SecLists
-
-### ⚙️ Configuration Files
-
-- **Git**: Global configuration with custom settings
-- **Neovim**: Complete configuration with plugins
-- **Vim**: Custom .vimrc
-- **VS Code**: Custom settings and preferences
-- **Ghostty**: Terminal configuration
-- **Tmux**: Multiplexer configuration
-- **Zsh**: Shell configuration with oh-my-posh
-
-## 🔄 Parallel Execution
-
-The refactored scripts optimize installation time through parallel execution:
-
-### ⚡ Parallel Installations
-
-- **CLI Tools**: All command-line utilities install simultaneously
-- **Media Apps**: Browsers and media players install in parallel
-- **Productivity Apps**: Productivity tools install concurrently
-
-### 🔄 Sequential Installations
-
-- **Development Tools**: Due to dependencies and system changes
-- **Security Tools**: Requires system-level modifications
-- **Shell Configuration**: Must run last as it changes the default shell
-
-## 🚨 Troubleshooting
-
-### Common Issues
-
-1. **Permission Errors**: Ensure you have administrator privileges
-2. **Homebrew Issues**: The script will install Homebrew if not present
-3. **Network Timeouts**: Check your internet connection
-4. **Disk Space**: Ensure sufficient free space (recommended: 10GB+)
-
-### Log Files
-
-Check the log files for detailed information:
-
-```bash
-# View error log
-tail -f logs/errors.log
-
-# View installation progress
-tail -f logs/install.log
-
-# View debug information
-tail -f logs/debug.log
-```
-
-### Manual Steps
-
-Some applications require manual installation:
-
-- **App Store**: Kindle, Perplexity
-- **Web Download**: Docker Desktop
-
-## 🔧 Customization
-
-### Adding New Tools
-
-To add new tools to the installation:
-
-1. **For Homebrew formulas**: Add to the appropriate array in the relevant script
-2. **For Homebrew casks**: Add to the appropriate array in the relevant script
-3. **For custom installations**: Add to the script using the
-   `execute_command()` function
-
-### Modifying Configurations
-
-Configuration files are located in `src/dotfiles/`:
-
-- Modify the source files
-- The scripts will copy them to the appropriate locations
-- Changes take effect after running the setup
-
-## 📈 Performance
-
-The refactored scripts provide significant performance improvements:
-
-- **~70% reduction** in code redundancy
-- **~50% faster** installation through parallel execution
-- **Comprehensive logging** for better debugging
-- **Robust error handling** for reliable operation
+- **New Homebrew items**: Add formulas or casks to the appropriate script arrays or `brew install` lines.
+- **Dotfiles**: Edit files under `src/dotfiles/` and re-run the relevant script or `master.sh`.
 
 ## Maintainers
 
 [@garretpatten](https://github.com/garretpatten/)
 
-_For questions, bug reports, or feature requests, please open an issue on
-this repository or contact the maintainer directly._
+For questions, bug reports, or feature requests, open an issue on this repository.
 
 ## License
 
