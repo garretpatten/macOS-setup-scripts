@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# System-wide preferences (Appearance, Dock, trackpad, Night Shift, security,
-# developer-oriented defaults, and Apple Silicon–friendly power tuning).
-# Run on macOS; many changes apply after Dock / Finder / SystemUIServer restart.
+# System-wide preferences (Appearance, Dock, trackpad, menu bar, Night Shift,
+# security, developer-oriented defaults, and Apple Silicon–friendly power tuning).
+# Run on macOS; many changes apply after Dock / Finder / ControlCenter / SystemUIServer restart.
 
 source "$(dirname "$0")/utils.sh"
 
@@ -32,6 +32,9 @@ defaults -currentHost write NSGlobalDomain com.apple.swipescrolldirection -bool 
 defaults write NSGlobalDomain KeyRepeat -int 1 2>>"$ERROR_LOG_FILE" || true
 defaults write NSGlobalDomain InitialKeyRepeat -int 10 2>>"$ERROR_LOG_FILE" || true
 
+# Full keyboard access (Tab through all controls)
+defaults write NSGlobalDomain AppleKeyboardUIMode -int 3 2>>"$ERROR_LOG_FILE" || true
+
 # Enable Three-Finger Drag
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true 2>>"$ERROR_LOG_FILE" || true
 
@@ -60,6 +63,12 @@ defaults write com.apple.SoftwareUpdate ConfigDataInstall -bool true 2>>"$ERROR_
 # Disable the "Are you sure you want to open this application?" quarantine dialog
 defaults write com.apple.LaunchServices LSQuarantine -bool false 2>>"$ERROR_LOG_FILE" || true
 
+# Disable Crash Reporter dialog
+defaults write com.apple.CrashReporter DialogType -string "none" 2>>"$ERROR_LOG_FILE" || true
+
+# Disable "Disk not ejected properly" notification (domain is com.apple.diskarbitrationd, not com.apple.DiskArbitration.*)
+defaults write com.apple.diskarbitrationd DADisableEjectNotification -bool true 2>>"$ERROR_LOG_FILE" || true
+
 # Require password immediately after sleep or screen saver begins
 defaults write com.apple.screensaver askForPassword -int 1 2>>"$ERROR_LOG_FILE" || true
 defaults write com.apple.screensaver askForPasswordDelay -int 0 2>>"$ERROR_LOG_FILE" || true
@@ -71,6 +80,12 @@ defaults write com.apple.finder AppleShowAllFiles -bool true 2>>"$ERROR_LOG_FILE
 defaults write com.apple.finder ShowPathbar -bool true 2>>"$ERROR_LOG_FILE" || true
 defaults write com.apple.finder FXPreferredViewStyle -string "clmv" 2>>"$ERROR_LOG_FILE" || true
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false 2>>"$ERROR_LOG_FILE" || true
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf" 2>>"$ERROR_LOG_FILE" || true
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true 2>>"$ERROR_LOG_FILE" || true
+
+# Fast spring-loading when hovering over folders in Finder
+defaults write NSGlobalDomain com.apple.springing.enabled -bool true 2>>"$ERROR_LOG_FILE" || true
+defaults write NSGlobalDomain com.apple.springing.delay -float 0 2>>"$ERROR_LOG_FILE" || true
 
 # Redirect screenshots and remove shadows
 ensure_directory "$HOME/Pictures/Screenshots"
@@ -92,14 +107,20 @@ defaults write com.apple.spotlight orderedItems -array \
     '{"enabled" = 1;"name" = "SYSTEM_SETTINGS";}' \
     '{"enabled" = 1;"name" = "DIRECTORIES";}' 2>>"$ERROR_LOG_FILE" || true
 
+# --- Menu bar (clock format; hide battery percentage) ---
+defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  h:mm" 2>>"$ERROR_LOG_FILE" || true
+defaults write com.apple.menuextra.battery ShowPercent -bool false 2>>"$ERROR_LOG_FILE" || true
+defaults write com.apple.controlcenter BatteryShowPercentage -bool false 2>>"$ERROR_LOG_FILE" || true
+
 # --- Energy & Hardware (Night Shift + pmset already applied in sudo block above) ---
 # Night Shift: enabled, warmest strength, sunset–sunrise (Type 2)
 defaults write com.apple.CoreBrightness CBBlueLightReductionEnabled -bool true 2>>"$ERROR_LOG_FILE" || true
 defaults write com.apple.CoreBrightness CBBlueLightReductionScheduleType -int 2 2>>"$ERROR_LOG_FILE" || true
 defaults write com.apple.CoreBrightness CBBlueLightReductionStrength -float 1 2>>"$ERROR_LOG_FILE" || true
 
-# --- Restart Services ---
+# --- Restart Services (ControlCenter + SystemUIServer pick up menu bar clock/battery prefs) ---
 killall Dock >/dev/null 2>&1 || true
 killall Finder >/dev/null 2>&1 || true
+killall ControlCenter >/dev/null 2>&1 || true
 killall SystemUIServer >/dev/null 2>&1 || true
 killall mds >/dev/null 2>&1 || true

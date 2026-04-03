@@ -6,7 +6,7 @@ Bash-based automation for provisioning a development-focused macOS environment o
 
 - **Modular scripts**: Run the full stack with `master.sh` or run individual phases (CLI, dev, media, and so on).
 - **Shared helpers**: `utils.sh` centralizes paths, `log_error`, safe copy/download helpers, and a single error log path.
-- **System defaults**: `system-config.sh` applies appearance, input, Finder, Dock, Spotlight, Night Shift, security-related settings, and Apple Silicon–friendly `pmset` tuning (see below).
+- **System defaults**: `system-config.sh` applies appearance, input, Finder, Dock, Spotlight, menu bar (clock/battery), Night Shift, security-related settings, and Apple Silicon–friendly `pmset` tuning (see below).
 - **CI**: GitHub Actions runs the scripts on `macos-latest` (with `pre-install.sh` skipped in the workflow for speed).
 
 ## Quick start
@@ -70,7 +70,7 @@ macOS-setup-scripts/
 │   │   ├── utils.sh          # Paths, logging, safe copy/download helpers
 │   │   ├── master.sh         # Orchestrates all phases in order
 │   │   ├── pre-install.sh    # Homebrew, Xcode CLT, updates (skipped in CI)
-│   │   ├── system-config.sh  # defaults write, firewall, pmset, restarts Dock/Finder/mds
+│   │   ├── system-config.sh  # defaults write, firewall, pmset; restarts Dock/Finder/ControlCenter/SystemUIServer/mds
 │   │   ├── organizeHome.sh   # Home directory layout
 │   │   ├── cli.sh            # CLI Homebrew formulas
 │   │   ├── media.sh          # Media casks
@@ -98,14 +98,15 @@ macOS-setup-scripts/
 
 ## `system-config.sh` (macOS defaults)
 
-This script writes user and system preferences and ends by restarting **Dock**, **Finder**, **SystemUIServer**, and **mds** so changes take effect. Highlights:
+This script writes user and system preferences and ends by restarting **Dock**, **Finder**, **ControlCenter**, **SystemUIServer**, and **mds** so changes take effect. Highlights:
 
 - **Appearance & UI**: Dark mode, small sidebar icons, reduced window animation for snappier feedback
-- **Input**: Classic scrolling, fast key repeat, tap to click, three-finger drag
+- **Input**: Classic scrolling, fast key repeat, full keyboard access (Tab through all controls), three-finger drag
 - **Security (single `sudo` session)**: Application Firewall on, stealth mode, guest account off, automatic macOS updates via `/Library/Preferences/com.apple.SoftwareUpdate`, plus `pmset` options suited to Apple Silicon (lid wake, TCP keepalive, Power Nap)
-- **Hardening & updates**: `.DS_Store` suppression on network/USB volumes, security-related Software Update toggles, Launch Services quarantine prompt off, screen-lock password settings
-- **Finder & screenshots**: Show extensions and hidden files, path bar, column view, screenshots under `~/Pictures/Screenshots` (directory created before setting the path)
+- **Hardening & updates**: `.DS_Store` suppression on network/USB volumes, security-related Software Update toggles, Launch Services quarantine prompt off, Crash Reporter dialog off, disk “not ejected properly” notification off, screen-lock password settings
+- **Finder & screenshots**: Show extensions and hidden files, path bar, column view, search scoped to the current folder, POSIX path in the title bar, spring-loading for folders, screenshots under `~/Pictures/Screenshots` (directory created before setting the path)
 - **Dock & Spotlight**: Autohide, minimize into app icon, no recent apps, faster Dock animations; Spotlight category ordering
+- **Menu bar**: Custom clock format; battery percentage hidden (`com.apple.menuextra.battery` and `com.apple.controlcenter` for newer Control Center behavior)
 - **Night Shift**: Enabled with sunset–sunrise-style schedule (strength and schedule keys as in the script)
 
 Adjust `system-config.sh` if you prefer stricter security (for example keeping quarantine prompts) or different power-management values.
