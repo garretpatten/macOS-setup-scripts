@@ -12,8 +12,8 @@ brew install --cask burp-suite zap 2>>"$ERROR_LOG_FILE" || true
 # Install Proton Pass CLI
 curl -fsSL https://proton.me/download/pass-cli/install.sh | bash 2>>"$ERROR_LOG_FILE" || true
 export PATH="/Users/garret/.local/bin:$PATH"
-# Add PATH to .zshrc if not already present
-path_line='export PATH="/Users/garret/.local/bin:$PATH"'
+# Add PATH to .zshrc if not already present ($PATH must expand when zsh reads .zshrc, not here)
+path_line="export PATH=\"/Users/garret/.local/bin:\$PATH\""
 if ! grep -qF "$path_line" "$HOME/.zshrc" 2>/dev/null; then
     echo "$path_line" >> "$HOME/.zshrc" 2>>"$ERROR_LOG_FILE" || true
 fi
