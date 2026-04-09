@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=utils.sh
 source "$(dirname "$0")/utils.sh"
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
