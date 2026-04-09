@@ -130,18 +130,56 @@ On push/PR to `master`, **Test Runner** (`.github/workflows/test-runner.yaml`) r
 
 ## What gets installed
 
-Illustrative list; see each `*.sh` for the exact Homebrew lines.
+Illustrative list; see each `*.sh` for exact commands and edge cases.
 
-### System configuration
+### Pre-install (`pre-install.sh`)
 
-- Homebrew and Xcode Command Line Tools (via `pre-install.sh`)
-- Firewall, stealth mode, guest account, Software Update and `pmset` behavior (via `system-config.sh`)
+- Homebrew (install if missing), `brew update`, `brew upgrade`, `brew cleanup`, analytics off
+- Xcode Command Line Tools and system software updates (`softwareupdate`)
 
-### Development, CLI, media, productivity, security
+### System defaults (`system-config.sh`)
 
-Examples include Node/Python tooling, Docker-related tooling, editors, browsers, media apps, and security casks and repositories—aligned with `dev.sh`, `cli.sh`, `media.sh`, and `security.sh`.
+- Firewall, stealth mode, guest account, Software Update and `pmset` behavior (no Homebrew packages)
 
-**Productivity** (`productivity.sh`): Homebrew casks for Balena Etcher, Notion, Proton Drive, Proton Mail, Standard Notes, and Zoom; plus the Raycast formula.
+### Home layout (`organizeHome.sh`)
+
+Creates `~/Books`, `~/Games`, `~/Hacking`, `~/Projects`; removes empty `~/Templates` if present (no Homebrew packages)
+
+### CLI tools (`cli.sh`)
+
+bat, curl, eza, fastfetch, fd, git, htop, jq, ripgrep, vim, wget
+
+### Media (`media.sh`)
+
+Brave Browser, DuckDuckGo, Spotify, VLC
+
+### Productivity (`productivity.sh`)
+
+- **Homebrew casks**: Balena Etcher, Notion, Proton Drive, Proton Mail, Standard Notes, Zoom
+- **Homebrew formula**: Raycast
+
+### Development (`dev.sh`)
+
+- **Homebrew formulas**: Node, Python 3.12, Colima, Docker, Docker Compose, GitHub CLI (`gh`), Neovim, Podman, Semgrep, ShellCheck, Tree-sitter, Angular CLI
+- **Homebrew casks**: Postman, Visual Studio Code
+- **Other Homebrew**: Sourcegraph app (from `sourcegraph/app` tap), Sourcegraph CLI (`src-cli`)
+- **Also**: NVM (official install script), `packer.nvim` for Neovim, optional Neovim / Vim / VS Code config from `src/dotfiles/`, global Git user settings and credential helper, `colima start`
+
+### Security (`security.sh`)
+
+- **Homebrew casks**: 1Password, 1Password CLI, Proton VPN, Signal, Burp Suite, OWASP ZAP
+- **Homebrew formulas**: OpenVPN, ExifTool, Nmap
+- **Also**: Proton Pass CLI (install script), clones **PayloadsAllTheThings** and **SecLists** into `~/Hacking/`, enables Application Firewall
+
+### Shell and terminal (`shell.sh`)
+
+- **Homebrew formulas**: Oh My Posh (`jandedobbeleer/oh-my-posh/oh-my-posh`), Ghostty, Zsh, tmux, zsh-autosuggestions, zsh-syntax-highlighting
+- **Homebrew casks**: Font Awesome Terminal Fonts, Fira Code, Meslo LG Nerd Font, Powerline Symbols
+- **Also**: optional Ghostty, tmux, and `.zshrc` from `src/dotfiles/`; default login shell set to Zsh
+
+### Post-install (`post-install.sh`)
+
+`brew` update, upgrade, and cleanup; prints `src/assets/wolf.txt` when present
 
 ### Configuration files
 
