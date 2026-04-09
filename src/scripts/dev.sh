@@ -9,18 +9,7 @@ brew install src-cli 2>>"$ERROR_LOG_FILE" || true
 
 curl -sSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash 2>>"$ERROR_LOG_FILE" || true
 
-if [[ ! -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]]; then
-    git clone https://github.com/wbthomason/packer.nvim "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" 2>>"$ERROR_LOG_FILE" || true
-fi
-
-if [[ ! -d "$HOME/.config/nvim" ]] && [[ -d "$PROJECT_ROOT/src/dotfiles/nvim" ]]; then
-    mkdir -p "$HOME/.config" 2>>"$ERROR_LOG_FILE" || true
-    cp -r "$PROJECT_ROOT/src/dotfiles/nvim" "$HOME/.config/nvim" 2>>"$ERROR_LOG_FILE" || true
-fi
-
-if [[ ! -f "$HOME/.vimrc" ]] && [[ -f "$PROJECT_ROOT/src/dotfiles/vim/.vimrc" ]]; then
-    copy_file_safe "$PROJECT_ROOT/src/dotfiles/vim/.vimrc" "$HOME/.vimrc"
-fi
+# Neovim config lives under dotfiles config/nvim; lazy.nvim is bootstrapped from init.lua (see organizeHome.sh).
 
 if [[ ! -f "$HOME/Library/Application Support/Code/User/settings.json" ]] && [[ -f "$PROJECT_ROOT/src/dotfiles/vs-code/settings.json" ]]; then
     copy_file_safe "$PROJECT_ROOT/src/dotfiles/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"

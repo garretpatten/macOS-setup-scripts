@@ -71,7 +71,7 @@ macOS-setup-scripts/
 │   │   ├── master.sh         # Orchestrates all phases in order
 │   │   ├── pre-install.sh    # Homebrew, Xcode CLT, updates (skipped in CI)
 │   │   ├── system-config.sh  # defaults write, firewall, pmset; restarts Dock/Finder/ControlCenter/SystemUIServer/mds
-│   │   ├── organizeHome.sh   # Home directory layout
+│   │   ├── organizeHome.sh   # Home layout + dotfiles config/home sync
 │   │   ├── cli.sh            # CLI Homebrew formulas
 │   │   ├── media.sh          # Media casks
 │   │   ├── productivity.sh   # Productivity casks
@@ -89,11 +89,11 @@ macOS-setup-scripts/
 
 1. `pre-install.sh` — Homebrew, Xcode Command Line Tools, system updates
 2. `system-config.sh` — macOS preferences and security-related system settings
-3. `organizeHome.sh` — home directory organization
+3. `organizeHome.sh` — home directory layout; runs the dotfiles repo `setup.sh`, copies `src/dotfiles/config/*` into `~/.config/`, copies `src/dotfiles/home/` files into `$HOME`, and seeds `~/.dotfiles_path` when missing
 4. `cli.sh`, `media.sh`, `productivity.sh` — Homebrew formulas and casks
 5. `dev.sh` — development stack
 6. `security.sh` — security tools and related setup
-7. `shell.sh` — zsh and related configuration
+7. `shell.sh` — Homebrew fonts and terminal packages; default shell to zsh (dotfiles themselves are applied in step 3)
 8. `post-install.sh` — cleanup and completion
 
 ## `system-config.sh` (macOS defaults)
@@ -116,6 +116,7 @@ Adjust `system-config.sh` if you prefer stricter security (for example keeping q
 - `log_error` — stderr plus append to `setup_errors.log`
 - `ensure_directory` — `mkdir -p` with errors logged
 - `copy_file_safe` / `copy_directory_safe` — copy only when source exists and destination is missing
+- `run_dotfiles_setup` / `sync_dotfiles_config_tree` / `sync_dotfiles_home_files` — apply the [dotfiles](https://github.com/garretpatten/dotfiles) `config/` and `home/` trees (see `organizeHome.sh`)
 - `download_file_safe` — `curl` with timeouts and validation
 
 Scripts append command errors with `2>>"$ERROR_LOG_FILE" || true` where appropriate so a single failure does not stop the whole run.
@@ -143,7 +144,7 @@ Examples include Node/Python tooling, Docker-related tooling, editors, browsers,
 
 ### Configuration files
 
-Dotfiles and assets under `src/dotfiles/` and `src/assets/` as copied or referenced by the scripts.
+The `src/dotfiles` submodule follows an XDG-oriented layout: **`config/`** (per-app trees copied into `~/.config/<app>/`) and **`home/`** (dotfiles in `$HOME`). VS Code settings and other paths are still referenced from paths under `src/dotfiles/` where noted in `dev.sh` and related scripts. Assets under `src/assets/` are used where those scripts copy or reference them.
 
 ## Troubleshooting
 
