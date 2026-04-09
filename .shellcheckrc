@@ -1,0 +1,4 @@
+# Allow following sourced files not passed on the command line (same as -x).
+external-sources=true
+# Resolve sources relative to each script's directory (e.g. utils.sh next to cli.sh).
+source-path=SCRIPTDIR

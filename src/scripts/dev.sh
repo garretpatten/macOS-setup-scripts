@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=utils.sh
 source "$(dirname "$0")/utils.sh"
 
 brew install node python@3.12 colima docker docker-compose gh neovim podman semgrep shellcheck tree-sitter angular-cli 2>>"$ERROR_LOG_FILE" || true

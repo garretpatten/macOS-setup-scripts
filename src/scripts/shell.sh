@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=utils.sh
 source "$(dirname "$0")/utils.sh"
 
 brew install jandedobbeleer/oh-my-posh/oh-my-posh 2>>"$ERROR_LOG_FILE" || true

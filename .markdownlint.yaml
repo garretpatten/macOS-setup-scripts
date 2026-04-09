@@ -1,0 +1,7 @@
+# Project defaults for markdownlint / markdownlint-cli2
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+default: true
+MD007:
+  indent: 2
+# Prose and README tables are easier to maintain without strict wrapping
+MD013: false

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=utils.sh
 source "$(dirname "$0")/utils.sh"
 
 if ! command -v brew >/dev/null 2>&1; then

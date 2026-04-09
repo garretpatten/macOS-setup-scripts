@@ -8,7 +8,8 @@ mkdir -p "$(dirname "$ERROR_LOG_FILE")"
 
 log_error() {
     local message="$1"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo -e "\033[0;31m[ERROR]\033[0m $message" >&2
     echo "[$timestamp] [ERROR] $message" >> "$ERROR_LOG_FILE"
 }
@@ -26,7 +27,8 @@ copy_file_safe() {
         return 0
     fi
 
-    local dest_dir=$(dirname "$destination")
+    local dest_dir
+    dest_dir=$(dirname "$destination")
     ensure_directory "$dest_dir"
 
     cp "$source" "$destination" 2>>"$ERROR_LOG_FILE" || true
@@ -40,7 +42,8 @@ copy_directory_safe() {
         return 0
     fi
 
-    local dest_dir=$(dirname "$destination")
+    local dest_dir
+    dest_dir=$(dirname "$destination")
     ensure_directory "$dest_dir"
 
     cp -r "$source" "$destination" 2>>"$ERROR_LOG_FILE" || true
