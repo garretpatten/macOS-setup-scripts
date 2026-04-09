@@ -139,7 +139,9 @@ Illustrative list; see each `*.sh` for the exact Homebrew lines.
 
 ### Development, CLI, media, productivity, security
 
-Examples include Node/Python tooling, Docker-related tooling, editors, browsers, media apps, productivity and security casks, and repositories—aligned with `dev.sh`, `cli.sh`, `media.sh`, `productivity.sh`, and `security.sh`.
+Examples include Node/Python tooling, Docker-related tooling, editors, browsers, media apps, and security casks and repositories—aligned with `dev.sh`, `cli.sh`, `media.sh`, and `security.sh`.
+
+**Productivity** (`productivity.sh`): Homebrew casks for Balena Etcher, Notion, Proton Drive, Proton Mail, Standard Notes, and Zoom; plus the Raycast formula.
 
 ### Configuration files
 
