@@ -14,17 +14,23 @@ if [[ ! -d "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" ]]; then
     git clone https://github.com/wbthomason/packer.nvim "$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim" 2>>"$ERROR_LOG_FILE" || true
 fi
 
-if [[ ! -d "$HOME/.config/nvim" ]] && [[ -d "$PROJECT_ROOT/src/dotfiles/nvim" ]]; then
-    mkdir -p "$HOME/.config" 2>>"$ERROR_LOG_FILE" || true
-    cp -r "$PROJECT_ROOT/src/dotfiles/nvim" "$HOME/.config/nvim" 2>>"$ERROR_LOG_FILE" || true
+DOTFILES_ROOT="$PROJECT_ROOT/src/dotfiles"
+
+if [[ -d "$DOTFILES_ROOT/config" ]]; then
+    copy_directory_safe "$DOTFILES_ROOT/config/nvim" "$HOME/.config/nvim"
+    copy_directory_safe "$DOTFILES_ROOT/config/fastfetch" "$HOME/.config/fastfetch"
+    copy_directory_safe "$DOTFILES_ROOT/config/btop" "$HOME/.config/btop"
+    copy_directory_safe "$DOTFILES_ROOT/config/alacritty" "$HOME/.config/alacritty"
+    copy_directory_safe "$DOTFILES_ROOT/config/kitty" "$HOME/.config/kitty"
+    copy_directory_safe "$DOTFILES_ROOT/config/zellij" "$HOME/.config/zellij"
 fi
 
-if [[ ! -f "$HOME/.vimrc" ]] && [[ -f "$PROJECT_ROOT/src/dotfiles/vim/.vimrc" ]]; then
-    copy_file_safe "$PROJECT_ROOT/src/dotfiles/vim/.vimrc" "$HOME/.vimrc"
+if [[ -d "$DOTFILES_ROOT/home" ]]; then
+    copy_file_safe "$DOTFILES_ROOT/home/.vimrc" "$HOME/.vimrc"
 fi
 
-if [[ ! -f "$HOME/Library/Application Support/Code/User/settings.json" ]] && [[ -f "$PROJECT_ROOT/src/dotfiles/vs-code/settings.json" ]]; then
-    copy_file_safe "$PROJECT_ROOT/src/dotfiles/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+if [[ ! -f "$HOME/Library/Application Support/Code/User/settings.json" ]] && [[ -f "$DOTFILES_ROOT/vs-code/settings.json" ]]; then
+    copy_file_safe "$DOTFILES_ROOT/vs-code/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
 fi
 
 git config --global credential.helper store 2>>"$ERROR_LOG_FILE" || true
