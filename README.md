@@ -155,7 +155,7 @@ Brave Browser, DuckDuckGo, Spotify, VLC
 
 ### Productivity (`productivity.sh`)
 
-- **Homebrew casks**: Balena Etcher, Notion, Proton Drive, Proton Mail, Standard Notes, Zoom
+- **Homebrew casks**: Balena Etcher, Google Gemini (desktop), Notion, Proton Drive, Proton Mail, Standard Notes, Zoom
 - **Homebrew formula**: Raycast
 
 ### Development (`dev.sh`)
