@@ -205,7 +205,7 @@ Brave Browser, DuckDuckGo, Spotify, VLC
 
 ### Post-install (`post-install.sh`)
 
-`brew` update, upgrade, and cleanup; prints completion notes and `src/assets/apple.txt` when present
+`brew` update, upgrade, and cleanup; prints completion notes and `src/assets/apple.txt` when present ([Fastfetch macOS ASCII logo](https://github.com/fastfetch-cli/fastfetch/blob/dev/src/logo/ascii/macos.txt), with color placeholders removed for plain `cat` output)
 
 ### Configuration files
 
