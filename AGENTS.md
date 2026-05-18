@@ -17,7 +17,7 @@ Guidance for coding agents working in **macOS-setup-scripts**.
 ```text
 src/scripts/          # Setup phases (*.sh); source utils.sh with shellcheck directives
 src/dotfiles/         # Submodule — separate repo; excluded from root Prettier runs
-src/assets/           # Static assets (e.g. wolf.txt)
+src/assets/           # Static assets (e.g. apple.txt)
 .github/workflows/    # GitHub Actions
 ```
 
