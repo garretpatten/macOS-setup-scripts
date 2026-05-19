@@ -1,6 +1,32 @@
-# macOS Setup Scripts
+<!-- markdownlint-disable MD033 MD041 -->
 
-Bash-based automation for provisioning a development-focused macOS environment on Apple Silicon (M-series) Macs: Homebrew installs, shell and dotfiles, and system-wide defaults.
+<p align="center">
+    <img src="https://img.shields.io/badge/macOS%20setup-scripts-000000?style=for-the-badge&logo=apple&logoColor=white&labelColor=1d1d1f" alt="Apple-style badge: macOS setup scripts project" />
+  </a>
+</p>
+
+<h1 align="center">macOS Setup Scripts</h1>
+
+<p align="center"><strong>Bash automation for a development-ready Mac.</strong></p>
+
+<p align="center">
+Homebrew installs, shell and Terminal setup, optional dotfiles, and opinionated<br />
+<code style="padding: 0.15rem 0.4rem;">defaults write</code> tuning for Apple Silicon and Intel.
+</p>
+
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/garretpatten/macOS-setup-scripts?style=flat-square" alt="License" /></a>
+  <img src="https://img.shields.io/badge/platform-macOS-0071e3?style=flat-square&logo=apple&logoColor=white" alt="Runs on macOS" />
+</p>
+
+<!-- markdownlint-enable MD033 MD041 -->
+
+---
+
+## Overview
+
+Structured automation for provisioning a polished, development-focused macOS environment:
+Homebrew formulas and casks, system-wide defaults, and repeatability you can trust in CI.
 
 ## Features
 
@@ -80,7 +106,7 @@ macOS-setup-scripts/
 │   │   ├── shell.sh          # Shell / terminal setup (zsh)
 │   │   └── post-install.sh   # Final steps
 │   ├── dotfiles/
-│   └── assets/
+│   └── assets/               # Completion banner art (e.g. apple.txt)
 ├── setup_errors.log          # Created at repo root when scripts run (gitignored)
 └── LICENSE
 ```
@@ -179,7 +205,7 @@ Brave Browser, DuckDuckGo, Spotify, VLC
 
 ### Post-install (`post-install.sh`)
 
-`brew` update, upgrade, and cleanup; prints `src/assets/wolf.txt` when present
+`brew` update, upgrade, and cleanup; prints completion notes and `src/assets/apple.txt` when present ([Fastfetch macOS ASCII logo](https://github.com/fastfetch-cli/fastfetch/blob/dev/src/logo/ascii/macos.txt), with color placeholders removed for plain `cat` output)
 
 ### Configuration files
 
