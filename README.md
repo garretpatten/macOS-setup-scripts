@@ -284,14 +284,14 @@ tail -n 50 setup_errors.log
 ## Customization
 
 - **New Homebrew items**: Add formulas or casks to the matching file under `src/scripts/install/`, then run `npm run installs` (or `bash src/scripts/run-install.sh`) or the single category script.
-- **macOS defaults or dotfiles**: Edit `src/scripts/config/` or the `src/dotfiles/` submodule, then run `npm run config` / `bash src/scripts/run-config.sh` to apply configuration without reinstalling packages.
+- **macOS defaults or dotfiles**: Develop changes in the [dotfiles](https://github.com/garretpatten/dotfiles) repository when editing the submodule; bump this repo’s **`src/dotfiles`** submodule to that commit. Edit `src/scripts/config/` for provisioning tweaks. Run **`npm run config`** / **`bash src/scripts/run-config.sh`** (or `master.sh`) to apply configuration without reinstalling packages.
 
 ## Dotfiles integration notes
 
 - **`~/.dotfiles_path`**: `config/shell.sh` seeds or refreshes this file so `home/.zshrc` can find the checkout (for example **`…/macOS-setup-scripts/src/dotfiles`**).
 - **tmux**: The vendored **`home/.tmux.conf`** expects **`~/.config/tmux/`** (includes, themes). `config/shell.sh` copies **`src/dotfiles/config/tmux/`** when that destination is not already present.
-- **Full XDG symlink mirror**: To link every **`config/<app>/`** tree under **`~/.config/<app>/`**, run **`./setup.sh --link-xdg-config`** from the submodule directory (see the [dotfiles README](https://github.com/garretpatten/dotfiles/blob/master/README.md)). Parent **`config/`** scripts still copy a **subset** for the apps this repo provisions.
-- **Upstream workflow**: Develop dotfiles in the [dotfiles](https://github.com/garretpatten/dotfiles) repository, bump this repo’s **`src/dotfiles`** submodule, then run **`npm run config`** (or `master.sh`) to consume updates.
+- **Full XDG symlink mirror**: To link every **`config/<app>/`** tree under **`~/.config/<app>/`**, run **`./setup.sh --link-xdg-config`** from the submodule directory (see the [dotfiles README](https://github.com/garretpatten/dotfiles/blob/master/README.md)). Parent **`config/`** scripts still copy a **subset** for the apps this repo provisions (`config/dev.sh`, `config/shell.sh`).
+- **Upstream workflow**: After updating the submodule, run **`npm run config`** (or `master.sh`) to consume changes on this machine.
 
 ## Maintainers
 
