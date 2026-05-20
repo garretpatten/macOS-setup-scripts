@@ -201,7 +201,7 @@ Brave Browser, DuckDuckGo, Spotify, VLC
 
 - **Homebrew formulas**: Oh My Posh (`jandedobbeleer/oh-my-posh/oh-my-posh`), Ghostty, Zsh, tmux, zsh-autosuggestions, zsh-syntax-highlighting
 - **Homebrew casks**: Font Awesome Terminal Fonts, Fira Code, Meslo LG Nerd Font, Powerline Symbols
-- **Also**: optional Ghostty, tmux, and `.zshrc` from `src/dotfiles/`; default login shell set to Zsh
+- **Also**: optional Ghostty, tmux, Oh My Posh themes, `.zshrc`, `.tmux.conf`, and **`~/.config/tmux/`** (modular tmux includes/themes from `src/dotfiles/config/tmux/`) from `src/dotfiles/`; writes **`~/.dotfiles_path`** when missing or stale so the vendored `home/.zshrc` can resolve **`DOTFILES`**; default login shell set to Zsh
 
 ### Post-install (`post-install.sh`)
 
@@ -224,7 +224,12 @@ tail -n 50 setup_errors.log
 ## Customization
 
 - **New Homebrew items**: Add formulas or casks to the appropriate script arrays or `brew install` lines.
-- **Dotfiles**: Edit files under `src/dotfiles/` and re-run the relevant script or `master.sh`.
+- **Dotfiles**: Develop changes in the [dotfiles](https://github.com/garretpatten/dotfiles) repository, bump this repo’s **`src/dotfiles`** submodule to that commit, then re-run the relevant script or `master.sh`. These scripts copy a **subset** of `config/` (see `shell.sh` and `dev.sh`); for a full symlink mirror of every **`config/<app>/`** tree under **`~/.config/<app>/`**, run **`./setup.sh --link-xdg-config`** from the submodule directory (see the dotfiles README).
+
+## Dotfiles integration notes
+
+- **`~/.dotfiles_path`**: `shell.sh` seeds or refreshes this file so `home/.zshrc` can find the checkout (for example **`…/macOS-setup-scripts/src/dotfiles`**).
+- **tmux**: The vendored **`home/.tmux.conf`** expects **`~/.config/tmux/`** (includes, themes). `shell.sh` copies **`src/dotfiles/config/tmux/`** when that destination is not already present.
 
 ## Maintainers
 

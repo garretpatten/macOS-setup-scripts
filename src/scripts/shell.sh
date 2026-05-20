@@ -12,6 +12,8 @@ DOTFILES_ROOT="$PROJECT_ROOT/src/dotfiles"
 if [[ -d "$DOTFILES_ROOT/config" ]]; then
     copy_directory_safe "$DOTFILES_ROOT/config/ghostty" "$HOME/.config/ghostty"
     copy_directory_safe "$DOTFILES_ROOT/config/oh-my-posh" "$HOME/.config/oh-my-posh"
+    # home/.tmux.conf sources ~/.config/tmux/includes/base.conf (modular layout; see dotfiles README).
+    copy_directory_safe "$DOTFILES_ROOT/config/tmux" "$HOME/.config/tmux"
 fi
 
 if [[ -d "$DOTFILES_ROOT/home" ]]; then
