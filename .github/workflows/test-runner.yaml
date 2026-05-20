@@ -19,24 +19,18 @@ jobs:
           submodules: recursive
 
       - name: Make scripts executable
-        run: chmod +x src/scripts/*.sh
+        run: |
+          chmod +x src/scripts/*.sh \
+            src/scripts/install/*.sh \
+            src/scripts/config/*.sh
 
       - name: Run setup scripts
         run: |
-          # Skip pre-install.sh as it installs OS updates and Xcode Command Line Tools,
-          # which takes too long in CI and is safe to assume works (Apple-provided commands).
+          # --ci skips pre-install.sh (Homebrew bootstrap, Xcode CLT,
+          # softwareupdate).
           # GitHub Actions macOS runners already have these installed.
           cd src/scripts
-          source utils.sh
-          bash system-config.sh 2>>"$ERROR_LOG_FILE" || true
-          bash organizeHome.sh 2>>"$ERROR_LOG_FILE" || true
-          bash cli.sh 2>>"$ERROR_LOG_FILE" || true
-          bash media.sh 2>>"$ERROR_LOG_FILE" || true
-          bash productivity.sh 2>>"$ERROR_LOG_FILE" || true
-          bash dev.sh 2>>"$ERROR_LOG_FILE" || true
-          bash security.sh 2>>"$ERROR_LOG_FILE" || true
-          zsh shell.sh 2>>"$ERROR_LOG_FILE" || true
-          bash post-install.sh 2>>"$ERROR_LOG_FILE" || true
+          bash master.sh --ci 2>>"$GITHUB_WORKSPACE/setup_errors.log" || true
 
       - name: Check error log
         working-directory: ${{ github.workspace }}
@@ -44,17 +38,27 @@ jobs:
           # Only show actual errors, not warnings or informational messages
           # Look for lines that indicate real failures:
           # - Lines starting with "Error:" (not "Warning:")
-          # - Fatal errors (excluding expected network issues and colima VM errors in CI)
+          # - Fatal errors (excluding expected network issues and colima VM
+          # errors in CI)
           # - Exit status errors (excluding GitHub Actions messages)
           # - Actual failure messages
           ERROR_LOG="setup_errors.log"
           if [[ -f "$ERROR_LOG" ]] && [[ -s "$ERROR_LOG" ]]; then
             FILTERED_LOG=$(mktemp)
-            # First, remove function definitions and other noise
-            grep -v -E "(^[a-zA-Z_][a-zA-Z0-9_]* \(\)|^local |^mkdir -p|^cp |^curl |^if \[\[|^then|^else|^fi|^return |^export |^==> Fetching|^🍺.*was successfully installed)" "$ERROR_LOG" | \
-              # Extract only actual errors, excluding known CI-safe errors
-              grep -E "(^Error:|^\[.*\] \[ERROR\]|fatal error|fatal:.*error|exit status [1-9]|exit code [1-9]|Failed to|failed to|FAILED)" | \
-              grep -v -E "(fatal: unable to access.*Could not resolve host|chsh:.*Credentials|chsh:.*PAM|chsh:.*password|time=.*level=fatal.*colima|time=.*level=fatal.*error starting vm|Error: Process completed with exit code)" | \
+            noise='^[a-zA-Z_][a-zA-Z0-9_]* \(\)|^local |^mkdir -p|^cp |^curl '
+            noise+='|^if \[\[|^then|^else|^fi|^return |^export |^==> Fetching'
+            noise+='|^🍺.*was successfully installed'
+            err_only='^Error:|^\[.*\] \[ERROR\]|fatal error|fatal:.*error|'
+            err_only+='exit status [1-9]|exit code [1-9]|'
+            err_only+='Failed to|failed to|FAILED'
+            ci_safe='fatal: unable to access.*Could not resolve host|'
+            ci_safe+='chsh:.*Credentials|chsh:.*PAM|chsh:.*password|'
+            ci_safe+='time=.*level=fatal.*colima|'
+            ci_safe+='time=.*level=fatal.*error starting vm|'
+            ci_safe+='Error: Process completed with exit code'
+            grep -v -E "$noise" "$ERROR_LOG" | \
+              grep -E "$err_only" | \
+              grep -v -E "$ci_safe" | \
               grep -v '^[[:space:]]*$' > "$FILTERED_LOG" || true
 
             if [[ -s "$FILTERED_LOG" ]]; then

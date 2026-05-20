@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# shellcheck source=utils.sh
-source "$(dirname "$0")/utils.sh"
+# shellcheck source=../utils.sh
+source "$(dirname "$0")/../utils.sh"
 
 if [[ -d "$HOME/Templates" ]]; then
     rmdir "$HOME/Templates" 2>>"$ERROR_LOG_FILE" || true

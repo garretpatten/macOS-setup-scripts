@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "installs": "bash src/scripts/run-install.sh",
+    "config": "bash src/scripts/run-config.sh",
+    "all": "bash src/scripts/master.sh"
+  },
   "devDependencies": {
     "prettier": "^3.6.2"
   }
