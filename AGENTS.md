@@ -6,7 +6,7 @@ Guidance for coding agents working in **macOS-setup-scripts**.
 
 - Bash automation for provisioning a development-focused macOS environment (Homebrew, dotfiles, `defaults write`, and related setup).
 - Orchestrator: `src/scripts/master.sh`; shared helpers: `src/scripts/utils.sh`.
-- Dotfiles live in the `src/dotfiles/` git submodule (do not edit unless the task explicitly requires submodule changes).
+- Dotfiles live in the `src/dotfiles/` git submodule (do not edit unless the task explicitly requires submodule changes). **`shell.sh`** and **`dev.sh`** copy a **subset** of **`src/dotfiles/config/`** into **`~/.config`**. If the submodule README documents new paths required by **`home/`** files (for example modular **tmux** under **`~/.config/tmux`**, sourced from **`home/.tmux.conf`**), update those scripts—or document **`(cd src/dotfiles && ./setup.sh --link-xdg-config)`** for a full XDG symlink pass.
 - User-facing docs: `README.md`.
 - CI on pull requests:
   - **Quality Checks** (`.github/workflows/quality-checks.yaml`) — markdownlint, Prettier, ShellCheck, yamllint via [garretpatten/quality-checks](https://github.com/garretpatten/quality-checks).
