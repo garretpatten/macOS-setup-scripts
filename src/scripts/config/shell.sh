@@ -1,17 +1,15 @@
 #!/bin/bash
 
-# shellcheck source=utils.sh
-source "$(dirname "$0")/utils.sh"
-
-brew install jandedobbeleer/oh-my-posh/oh-my-posh 2>>"$ERROR_LOG_FILE" || true
-brew install ghostty zsh tmux zsh-autosuggestions zsh-syntax-highlighting 2>>"$ERROR_LOG_FILE" || true
-brew install --cask font-awesome-terminal-fonts font-fira-code font-meslo-lg-nerd-font font-powerline-symbols 2>>"$ERROR_LOG_FILE" || true
+# shellcheck source=../utils.sh
+source "$(dirname "$0")/../utils.sh"
 
 DOTFILES_ROOT="$PROJECT_ROOT/src/dotfiles"
 
 if [[ -d "$DOTFILES_ROOT/config" ]]; then
     copy_directory_safe "$DOTFILES_ROOT/config/ghostty" "$HOME/.config/ghostty"
     copy_directory_safe "$DOTFILES_ROOT/config/oh-my-posh" "$HOME/.config/oh-my-posh"
+    # home/.tmux.conf sources ~/.config/tmux/includes/base.conf (modular layout; see dotfiles README).
+    copy_directory_safe "$DOTFILES_ROOT/config/tmux" "$HOME/.config/tmux"
 fi
 
 if [[ -d "$DOTFILES_ROOT/home" ]]; then

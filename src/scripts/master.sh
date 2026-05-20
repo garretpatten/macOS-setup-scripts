@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Full provisioning: same chronological order as the original master script —
+# system defaults and home layout early, category installs, dev configuration
+# right after dev installs, shell configuration after brew maintenance.
+
 # shellcheck source=utils.sh
 source "$(dirname "$0")/utils.sh"
 
@@ -8,13 +12,37 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
     exit 1
 fi
 
-bash "$(dirname "$0")/pre-install.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute pre-install.sh"
-bash "$(dirname "$0")/system-config.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute system-config.sh"
-bash "$(dirname "$0")/organizeHome.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute organizeHome.sh"
-bash "$(dirname "$0")/cli.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute cli.sh"
-bash "$(dirname "$0")/media.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute media.sh"
-bash "$(dirname "$0")/productivity.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute productivity.sh"
-bash "$(dirname "$0")/dev.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute dev.sh"
-bash "$(dirname "$0")/security.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute security.sh"
-zsh "$(dirname "$0")/shell.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute shell.sh"
-bash "$(dirname "$0")/post-install.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute post-install.sh"
+ROOT="$(dirname "$0")"
+IDIR="$ROOT/install"
+CDIR="$ROOT/config"
+
+run() {
+    bash "$1" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute $1"
+}
+
+SKIP_PRE_INSTALL=false
+for arg in "$@"; do
+    if [[ "$arg" == "--ci" ]]; then
+        SKIP_PRE_INSTALL=true
+    fi
+done
+
+if ! $SKIP_PRE_INSTALL; then
+    run "$IDIR/pre-install.sh"
+fi
+
+run "$CDIR/system-config.sh"
+run "$CDIR/organizeHome.sh"
+
+run "$IDIR/cli.sh"
+run "$IDIR/media.sh"
+run "$IDIR/productivity.sh"
+run "$IDIR/dev.sh"
+run "$CDIR/dev.sh"
+run "$IDIR/security.sh"
+run "$IDIR/shell.sh"
+run "$IDIR/post-install.sh"
+
+zsh "$CDIR/shell.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute config/shell.sh"
+run "$CDIR/security.sh"
+run "$CDIR/completion.sh"

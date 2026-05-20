@@ -5,17 +5,21 @@ Guidance for coding agents working in **macOS-setup-scripts**.
 ## Repository summary
 
 - Bash automation for provisioning a development-focused macOS environment (Homebrew, dotfiles, `defaults write`, and related setup).
-- Orchestrator: `src/scripts/master.sh`; shared helpers: `src/scripts/utils.sh`.
-- Dotfiles live in the `src/dotfiles/` git submodule (do not edit unless the task explicitly requires submodule changes).
+- **Orchestrators**: `src/scripts/master.sh` (full run, **interleaved** install + config order), `src/scripts/run-install.sh` (packages only), `src/scripts/run-config.sh` (`defaults`, dotfiles, shell hooks). **npm**: `npm run all` / `installs` / `config` (see `package.json` and `README.md`).
+- **Shared helpers**: `src/scripts/utils.sh` — defines `SCRIPTS_DIR` (always `src/scripts/`), `PROJECT_ROOT`, and `ERROR_LOG_FILE`.
+- Dotfiles live in the `src/dotfiles/` git submodule (do not edit unless the task explicitly requires submodule changes). **`install/*.sh`** copies/installs packages; **`config/*.sh`** applies `defaults`, copies submodule trees into `~`, Git identity, `chsh`, etc. When submodule `home/` or `config/` gains new required paths, update the matching **`config/`** script (or document **`setup.sh --link-xdg-config`** in the dotfiles repo).
 - User-facing docs: `README.md`.
 - CI on pull requests:
   - **Quality Checks** (`.github/workflows/quality-checks.yaml`) — markdownlint, Prettier, ShellCheck, yamllint via [garretpatten/quality-checks](https://github.com/garretpatten/quality-checks).
-  - **Test Runner** (`.github/workflows/test-runner.yaml`) — runs scripts on `macos-latest` (skips heavy steps in `pre-install.sh`).
+  - **Test Runner** (`.github/workflows/test-runner.yaml`) — runs `bash src/scripts/master.sh --ci` on `macos-latest` (skips `install/pre-install.sh`).
 
 ## Layout
 
 ```text
-src/scripts/          # Setup phases (*.sh); source utils.sh with shellcheck directives
+src/scripts/
+  utils.sh, master.sh, run-install.sh, run-config.sh
+  install/            # Homebrew, external installers, clones (per category)
+  config/             # defaults write, dotfiles, shell/security tweaks, completion banner
 src/dotfiles/         # Submodule — separate repo; excluded from root Prettier runs
 src/assets/           # Static assets (e.g. apple.txt)
 .github/workflows/    # GitHub Actions
@@ -24,12 +28,14 @@ src/assets/           # Static assets (e.g. apple.txt)
 ## Shell script conventions
 
 - Use `#!/bin/bash` and `set` behavior consistent with neighboring scripts.
-- Source shared code with a ShellCheck hint, for example:
+- Source shared code with a ShellCheck hint. Scripts in **`install/`** or **`config/`**:
 
   ```bash
-  # shellcheck source=utils.sh
-  source "${SCRIPT_DIR}/utils.sh"
+  # shellcheck source=../utils.sh
+  source "$(dirname "$0")/../utils.sh"
   ```
+
+  Top-level scripts next to **`utils.sh`** may use `# shellcheck source=utils.sh` and `source "$(dirname "$0")/utils.sh"`.
 
 - Prefer `utils.sh` helpers (`log_error`, `ensure_directory`, `copy_file_safe`, and so on) over duplicating logic.
 - Append recoverable command failures with `2>>"$ERROR_LOG_FILE" || true` where other scripts already do.
@@ -130,7 +136,12 @@ Use when you touched many paths or want parity with a broad local sweep:
 ```bash
 npx --yes markdownlint-cli2 "**/*.md"
 npx prettier --no-error-on-unmatched-pattern --check .
-shellcheck src/scripts/*.sh
+shellcheck src/scripts/utils.sh \
+  src/scripts/master.sh \
+  src/scripts/run-install.sh \
+  src/scripts/run-config.sh \
+  src/scripts/install/*.sh \
+  src/scripts/config/*.sh
 yamllint .github .yamllint .markdownlint.yaml
 ```
 
@@ -138,7 +149,7 @@ Prettier honors `.prettierignore` (including `src/dotfiles/`). Yamllint loads `.
 
 ## Typical validation order
 
-1. **Shell** (`.sh` under `src/scripts/`): `shellcheck`
+1. **Shell** (`utils.sh`, orchestrators, `install/*.sh`, `config/*.sh`): `shellcheck`
 2. **YAML** (`.github/`, root `*.yaml` / `*.yml`): `yamllint`
 3. **Markdown**: `markdownlint-cli2` (fix with `--fix` if needed)
 4. **Prettier** (JSON, Markdown, YAML, and other supported types in scope): `prettier --check` after any `--write`

@@ -30,10 +30,11 @@ Homebrew formulas and casks, system-wide defaults, and repeatability you can tru
 
 ## Features
 
-- **Modular scripts**: Run the full stack with `master.sh` or run individual phases (CLI, dev, media, and so on).
-- **Shared helpers**: `utils.sh` centralizes paths, `log_error`, safe copy/download helpers, and a single error log path.
-- **System defaults**: `system-config.sh` applies appearance, input, Finder, Dock, Spotlight, menu bar (clock/battery), Night Shift, security-related settings, and Apple Silicon–friendly `pmset` tuning (see below).
-- **CI**: GitHub Actions runs the scripts on `macos-latest` (with `pre-install.sh` skipped in the workflow for speed).
+- **Install vs configuration**: Category scripts are split under `src/scripts/install/` (Homebrew, installers, clones) and `src/scripts/config/` (`defaults write`, dotfiles, Git identity, login shell). Orchestrators run one bundle or both.
+- **npm entrypoints**: After `npm ci`, use `npm run installs`, `npm run config`, or `npm run all` (see [npm scripts](#npm-scripts)).
+- **Shared helpers**: `utils.sh` centralizes repo paths, `log_error`, safe copy/download helpers, and a single error log path.
+- **System defaults**: `config/system-config.sh` applies appearance, input, Finder, Dock, Spotlight, menu bar (clock/battery), Night Shift, security-related settings, and Apple Silicon–friendly `pmset` tuning (see below).
+- **CI**: GitHub Actions runs `master.sh --ci` on `macos-latest` (skips `install/pre-install.sh` for speed).
 
 ## Quick start
 
@@ -41,7 +42,7 @@ Homebrew formulas and casks, system-wide defaults, and repeatability you can tru
 
 - macOS (recent versions; scripts assume Darwin)
 - Network access for Homebrew and downloads
-- Administrator privileges when `sudo` is required (for example firewall, guest account, system Software Update plist, and `pmset` in `system-config.sh`)
+- Administrator privileges when `sudo` is required (for example firewall, guest account, system Software Update plist, and `pmset` in `config/system-config.sh`)
 
 ### Installation
 
@@ -58,71 +59,111 @@ Homebrew formulas and casks, system-wide defaults, and repeatability you can tru
    git submodule update --init --remote --recursive src/dotfiles/
    ```
 
-3. **Make scripts executable**
+3. **Install Node dev deps** (needed for `npm run`)
 
    ```bash
-   chmod +x src/scripts/*.sh
+   npm ci
    ```
 
-4. **Run the full setup**
+4. **Make scripts executable**
 
    ```bash
-   bash src/scripts/master.sh
+   chmod +x src/scripts/*.sh \
+     src/scripts/install/*.sh \
+     src/scripts/config/*.sh
    ```
 
-### Individual scripts
+5. **Run setup**
 
-Examples:
+   ```bash
+   npm run all
+   # or: bash src/scripts/master.sh
+   ```
+
+### npm scripts
+
+| Command            | Runs                                                                                                                                                                       |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run all`      | Full provisioning (`master.sh`): interleaved installs and configuration (same order as the historical single `master.sh`; see [Execution flow](#execution-flow-mastersh)). |
+| `npm run installs` | Install bundle only (`run-install.sh`): Homebrew, external installers, and security repo clones—no `defaults write` or dotfiles.                                           |
+| `npm run config`   | Configuration bundle only (`run-config.sh`): macOS defaults, home layout, dev/shell dotfiles, Proton Pass `PATH` hook, completion banner.                                  |
+
+Use **`npm run config`** on machines that already have packages but should pick up the latest `defaults`, dotfiles copies, or shell tweaks from this repo.
+
+Bash equivalents:
 
 ```bash
-bash src/scripts/system-config.sh   # macOS defaults only (no Homebrew)
-bash src/scripts/cli.sh
-bash src/scripts/dev.sh
-bash src/scripts/media.sh
-bash src/scripts/productivity.sh
-bash src/scripts/security.sh
-zsh src/scripts/shell.sh
-bash src/scripts/organizeHome.sh
+bash src/scripts/run-install.sh
+bash src/scripts/run-config.sh
+bash src/scripts/master.sh
 ```
+
+### Granular scripts
+
+Run a single category (paths are relative to the repo root):
+
+```bash
+bash src/scripts/install/cli.sh
+bash src/scripts/config/system-config.sh    # macOS defaults only
+bash src/scripts/config/organizeHome.sh
+```
+
+`config/shell.sh` is normally invoked by `run-config.sh` / `master.sh` with **`zsh`** (login-shell parity with the prior setup).
 
 ## Project structure
 
 ```text
 macOS-setup-scripts/
 ├── .github/workflows/
-│   └── test-runner.yaml      # CI: runs scripts on macOS runners
+│   └── test-runner.yaml      # CI: master.sh --ci on macOS runners
 ├── src/
 │   ├── scripts/
-│   │   ├── utils.sh          # Paths, logging, safe copy/download helpers
-│   │   ├── master.sh         # Orchestrates all phases in order
-│   │   ├── pre-install.sh    # Homebrew, Xcode CLT, updates (skipped in CI)
-│   │   ├── system-config.sh  # defaults write, firewall, pmset; restarts Dock/Finder/ControlCenter/SystemUIServer/mds
-│   │   ├── organizeHome.sh   # Home directory layout
-│   │   ├── cli.sh            # CLI Homebrew formulas
-│   │   ├── media.sh          # Media casks
-│   │   ├── productivity.sh   # Productivity casks
-│   │   ├── dev.sh            # Development tooling
-│   │   ├── security.sh       # Security tooling
-│   │   ├── shell.sh          # Shell / terminal setup (zsh)
-│   │   └── post-install.sh   # Final steps
-│   ├── dotfiles/
-│   └── assets/               # Completion banner art (e.g. apple.txt)
-├── setup_errors.log          # Created at repo root when scripts run (gitignored)
+│   │   ├── utils.sh           # Paths, logging, safe copy/download helpers
+│   │   ├── master.sh          # Full run: installs + config (interleaved; see below)
+│   │   ├── run-install.sh     # Install bundle only (--ci skips pre-install)
+│   │   ├── run-config.sh      # Configuration bundle only
+│   │   ├── install/
+│   │   │   ├── pre-install.sh # Homebrew bootstrap, Xcode CLT, softwareupdate
+│   │   │   ├── cli.sh         # CLI formulas
+│   │   │   ├── media.sh       # Media casks
+│   │   │   ├── productivity.sh
+│   │   │   ├── dev.sh         # Dev formulas/casks, NVM, packer.nvim
+│   │   │   ├── security.sh    # Security packages, Proton Pass installer, clones
+│   │   │   ├── shell.sh       # Terminal fonts, Ghostty, tmux, Oh My Posh, etc.
+│   │   │   └── post-install.sh# brew update / upgrade / cleanup
+│   │   └── config/
+│   │       ├── system-config.sh  # defaults write, firewall, pmset; restarts services
+│   │       ├── organizeHome.sh   # Home directory layout
+│   │       ├── dev.sh            # Dotfiles (editors), global git config, colima start
+│   │       ├── shell.sh          # Shell/tmux dotfiles, ~/.dotfiles_path, chsh
+│   │       ├── security.sh       # Proton Pass PATH snippet in ~/.zshrc
+│   │       └── completion.sh     # Banner + next steps
+│   ├── dotfiles/              # Submodule
+│   └── assets/                # Completion banner (e.g. apple.txt)
+├── setup_errors.log           # Created at repo root when scripts run (gitignored)
 └── LICENSE
 ```
 
 ## Execution flow (`master.sh`)
 
-1. `pre-install.sh` — Homebrew, Xcode Command Line Tools, system updates
-2. `system-config.sh` — macOS preferences and security-related system settings
-3. `organizeHome.sh` — home directory organization
-4. `cli.sh`, `media.sh`, `productivity.sh` — Homebrew formulas and casks
-5. `dev.sh` — development stack
-6. `security.sh` — security tools and related setup
-7. `shell.sh` — zsh and related configuration
-8. `post-install.sh` — cleanup and completion
+`master.sh` keeps the historical **interleaved** ordering so macOS preferences run before long Homebrew work, development dotfiles apply immediately after dev packages, and shell dotfiles run after `install/post-install.sh`:
 
-## `system-config.sh` (macOS defaults)
+1. `install/pre-install.sh` — Homebrew bootstrap, Xcode Command Line Tools, `softwareupdate` (skipped with `master.sh --ci`)
+2. `config/system-config.sh` — macOS preferences and security-related system settings
+3. `config/organizeHome.sh` — home directory layout
+4. `install/cli.sh`, `install/media.sh`, `install/productivity.sh` — category installs
+5. `install/dev.sh` — development Homebrew stack, NVM, `packer.nvim`
+6. `config/dev.sh` — editor/Neovim dotfiles, global Git settings, `colima start`
+7. `install/security.sh` — security packages, Proton Pass installer, `~/Hacking` clones
+8. `install/shell.sh` — shell/terminal Homebrew packages
+9. `install/post-install.sh` — `brew` maintenance
+10. `config/shell.sh` — shell/dotfiles and default login shell (via **`zsh`**)
+11. `config/security.sh` — append Proton Pass `PATH` to `~/.zshrc` if missing
+12. `config/completion.sh` — completion banner
+
+**`run-install.sh`** runs steps **1** (optional) and **4–9** only (no `defaults` or dotfiles). **`run-config.sh`** runs **2**, **3**, **6**, **10–12** in order (full configuration pass without installing packages).
+
+## `config/system-config.sh` (macOS defaults)
 
 This script writes user and system preferences and ends by restarting **Dock**, **Finder**, **ControlCenter**, **SystemUIServer**, and **mds** so changes take effect. Highlights:
 
@@ -135,7 +176,7 @@ This script writes user and system preferences and ends by restarting **Dock**, 
 - **Menu bar**: Custom clock format; battery percentage hidden (`com.apple.menuextra.battery` and `com.apple.controlcenter` for newer Control Center behavior)
 - **Night Shift**: Enabled with sunset–sunrise-style schedule (strength and schedule keys as in the script)
 
-Adjust `system-config.sh` if you prefer stricter security (for example keeping quarantine prompts) or different power-management values.
+Adjust `config/system-config.sh` if you prefer stricter security (for example keeping quarantine prompts) or different power-management values.
 
 ## Helpers (`utils.sh`)
 
@@ -152,69 +193,88 @@ Scripts append command errors with `2>>"$ERROR_LOG_FILE" || true` where appropri
 
 ## Testing
 
-On push/PR to `master`, **Test Runner** (`.github/workflows/test-runner.yaml`) runs the scripts on a GitHub-hosted macOS runner. `pre-install.sh` is skipped there to avoid long Xcode/OS update steps; the workflow checks `setup_errors.log` for real failures.
+On push/PR to `master`, **Test Runner** (`.github/workflows/test-runner.yaml`) runs `bash src/scripts/master.sh --ci` on a GitHub-hosted macOS runner. That skips `install/pre-install.sh` to avoid long Xcode/OS update steps; the workflow checks `setup_errors.log` for real failures.
 
-## What gets installed
+## What gets installed and configured
 
-Illustrative list; see each `*.sh` for exact commands and edge cases.
+Illustrative list; see each script under `src/scripts/install/` and `src/scripts/config/` for exact commands.
 
-### Pre-install (`pre-install.sh`)
+### Install bundle (`install/`)
+
+#### Pre-install (`install/pre-install.sh`)
 
 - Homebrew (install if missing), `brew update`, `brew upgrade`, `brew cleanup`, analytics off
 - Xcode Command Line Tools and system software updates (`softwareupdate`)
 
-### System defaults (`system-config.sh`)
-
-- Firewall, stealth mode, guest account, Software Update and `pmset` behavior (no Homebrew packages)
-
-### Home layout (`organizeHome.sh`)
-
-Creates `~/Books`, `~/Games`, `~/Hacking`, `~/Projects`; removes empty `~/Templates` if present (no Homebrew packages)
-
-### CLI tools (`cli.sh`)
+#### CLI tools (`install/cli.sh`)
 
 bat, curl, eza, fastfetch, fd, git, htop, jq, ripgrep, vim, wget
 
-### Media (`media.sh`)
+#### Media (`install/media.sh`)
 
 Brave Browser, DuckDuckGo, Spotify, VLC
 
-### Productivity (`productivity.sh`)
+#### Productivity (`install/productivity.sh`)
 
 - **Homebrew casks**: Balena Etcher, Google Gemini (desktop), Notion, Proton Drive, Proton Mail, Standard Notes, Zoom
 - **Homebrew formula**: Raycast
 
-### Development (`dev.sh`)
+#### Development (`install/dev.sh`)
 
 - **Homebrew formulas**: Node, Python 3.12, Colima, Docker, Docker Compose, GitHub CLI (`gh`), Neovim, Podman, Semgrep, ShellCheck, Tree-sitter, Angular CLI
 - **Homebrew casks**: Postman, Visual Studio Code
 - **Other Homebrew**: Sourcegraph app (from `sourcegraph/app` tap), Sourcegraph CLI (`src-cli`)
-- **Also**: NVM (official install script), `packer.nvim` for Neovim, optional Neovim / Vim / VS Code config from `src/dotfiles/`, global Git user settings and credential helper, `colima start`
+- **Also**: NVM (official install script), `packer.nvim` clone for Neovim
 
-### Security (`security.sh`)
+#### Security (`install/security.sh`)
 
 - **Homebrew casks**: 1Password, 1Password CLI, Proton VPN, Signal, Burp Suite, OWASP ZAP
 - **Homebrew formulas**: OpenVPN, ExifTool, Nmap
-- **Also**: Proton Pass CLI (install script), clones **PayloadsAllTheThings** and **SecLists** into `~/Hacking/`, enables Application Firewall
+- **Also**: Proton Pass CLI (install script), clones **PayloadsAllTheThings** and **SecLists** into `~/Hacking/` (directory created if needed)
 
-### Shell and terminal (`shell.sh`)
+#### Shell and terminal (`install/shell.sh`)
 
 - **Homebrew formulas**: Oh My Posh (`jandedobbeleer/oh-my-posh/oh-my-posh`), Ghostty, Zsh, tmux, zsh-autosuggestions, zsh-syntax-highlighting
 - **Homebrew casks**: Font Awesome Terminal Fonts, Fira Code, Meslo LG Nerd Font, Powerline Symbols
-- **Also**: optional Ghostty, tmux, and `.zshrc` from `src/dotfiles/`; default login shell set to Zsh
 
-### Post-install (`post-install.sh`)
+#### Post-install (`install/post-install.sh`)
 
-`brew` update, upgrade, and cleanup; prints completion notes and `src/assets/apple.txt` when present ([Fastfetch macOS ASCII logo](https://github.com/fastfetch-cli/fastfetch/blob/dev/src/logo/ascii/macos.txt), with color placeholders removed for plain `cat` output)
+`brew` update, upgrade, and cleanup
 
-### Configuration files
+### Configuration bundle (`config/`)
 
-Dotfiles and assets under `src/dotfiles/` and `src/assets/` as copied or referenced by the scripts.
+#### System defaults (`config/system-config.sh`)
+
+- Firewall, stealth mode, guest account, Software Update and `pmset` behavior (no Homebrew packages)
+
+#### Home layout (`config/organizeHome.sh`)
+
+Creates `~/Books`, `~/Games`, `~/Hacking`, `~/Projects`; removes empty `~/Templates` if present
+
+#### Development (`config/dev.sh`)
+
+Optional Neovim / Vim / VS Code / terminal-app config from `src/dotfiles/`, global Git user settings and credential helper, `colima start`
+
+#### Shell and terminal (`config/shell.sh`)
+
+- **Also**: Ghostty and Oh My Posh config trees, **`~/.config/tmux/`** (modular tmux includes/themes), `.zshrc`, `.tmux.conf` from `src/dotfiles/`; writes **`~/.dotfiles_path`** when missing or stale; default login shell set to Zsh
+
+#### Security (`config/security.sh`)
+
+Appends **`export PATH="/Users/garret/.local/bin:$PATH"`** to `~/.zshrc` when Proton Pass CLI’s bin is not already referenced (runs after `config/shell.sh` so the main `~/.zshrc` is copied first).
+
+#### Completion (`config/completion.sh`)
+
+Prints completion notes and `src/assets/apple.txt` when present ([Fastfetch macOS ASCII logo](https://github.com/fastfetch-cli/fastfetch/blob/dev/src/logo/ascii/macos.txt), with color placeholders removed for plain `cat` output)
+
+### Assets
+
+Dotfiles and assets under `src/dotfiles/` and `src/assets/` as copied or referenced by the configuration scripts.
 
 ## Troubleshooting
 
-- **Permissions**: Some steps need `sudo`; you may be prompted once per `sudo` invocation (grouped in `system-config.sh` where possible).
-- **Homebrew**: `pre-install.sh` expects to install or use Homebrew if missing.
+- **Permissions**: Some steps need `sudo`; you may be prompted once per `sudo` invocation (grouped in `config/system-config.sh` where possible).
+- **Homebrew**: `install/pre-install.sh` expects to install or use Homebrew if missing.
 - **Logs**: Inspect `setup_errors.log` at the repo root after a run.
 
 ```bash
@@ -223,8 +283,15 @@ tail -n 50 setup_errors.log
 
 ## Customization
 
-- **New Homebrew items**: Add formulas or casks to the appropriate script arrays or `brew install` lines.
-- **Dotfiles**: Edit files under `src/dotfiles/` and re-run the relevant script or `master.sh`.
+- **New Homebrew items**: Add formulas or casks to the matching file under `src/scripts/install/`, then run `npm run installs` (or `bash src/scripts/run-install.sh`) or the single category script.
+- **macOS defaults or dotfiles**: Edit `src/scripts/config/` or the `src/dotfiles/` submodule, then run `npm run config` / `bash src/scripts/run-config.sh` to apply configuration without reinstalling packages.
+
+## Dotfiles integration notes
+
+- **`~/.dotfiles_path`**: `config/shell.sh` seeds or refreshes this file so `home/.zshrc` can find the checkout (for example **`…/macOS-setup-scripts/src/dotfiles`**).
+- **tmux**: The vendored **`home/.tmux.conf`** expects **`~/.config/tmux/`** (includes, themes). `config/shell.sh` copies **`src/dotfiles/config/tmux/`** when that destination is not already present.
+- **Full XDG symlink mirror**: To link every **`config/<app>/`** tree under **`~/.config/<app>/`**, run **`./setup.sh --link-xdg-config`** from the submodule directory (see the [dotfiles README](https://github.com/garretpatten/dotfiles/blob/master/README.md)). Parent **`config/`** scripts still copy a **subset** for the apps this repo provisions.
+- **Upstream workflow**: Develop dotfiles in the [dotfiles](https://github.com/garretpatten/dotfiles) repository, bump this repo’s **`src/dotfiles`** submodule, then run **`npm run config`** (or `master.sh`) to consume updates.
 
 ## Maintainers
 

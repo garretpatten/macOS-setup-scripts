@@ -1,7 +1,11 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+# This file always lives at src/scripts/utils.sh (do not move without updating paths below).
+
+_UTIL_SH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPTS_DIR="$_UTIL_SH"
+SCRIPT_DIR="$SCRIPTS_DIR"
+PROJECT_ROOT="$(cd "$SCRIPTS_DIR/../.." && pwd)"
 ERROR_LOG_FILE="${PROJECT_ROOT}/setup_errors.log"
 
 mkdir -p "$(dirname "$ERROR_LOG_FILE")"
@@ -66,6 +70,5 @@ download_file_safe() {
     fi
 }
 
-export SCRIPT_DIR PROJECT_ROOT ERROR_LOG_FILE
+export SCRIPT_DIR SCRIPTS_DIR PROJECT_ROOT ERROR_LOG_FILE
 export -f log_error ensure_directory copy_file_safe copy_directory_safe download_file_safe
-

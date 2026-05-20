@@ -4,8 +4,8 @@
 # security, developer-oriented defaults, and Apple Silicon–friendly power tuning).
 # Run on macOS; many changes apply after Dock / Finder / ControlCenter / SystemUIServer restart.
 
-# shellcheck source=utils.sh
-source "$(dirname "$0")/utils.sh"
+# shellcheck source=../utils.sh
+source "$(dirname "$0")/../utils.sh"
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
     log_error "system-config.sh requires macOS"
