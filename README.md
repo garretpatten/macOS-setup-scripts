@@ -208,7 +208,7 @@ Illustrative list; see each script under `src/scripts/install/` and `src/scripts
 
 #### CLI tools (`install/cli.sh`)
 
-bat, curl, eza, fastfetch, fd, git, htop, jq, ripgrep, vim, wget
+bat, btop, curl, eza, fastfetch, fd, git, htop, jq, lazygit, ripgrep, vim, wget
 
 #### Media (`install/media.sh`)
 
