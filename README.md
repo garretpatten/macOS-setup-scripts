@@ -208,7 +208,7 @@ Illustrative list; see each script under `src/scripts/install/` and `src/scripts
 
 #### CLI tools (`install/cli.sh`)
 
-bat, btop, curl, eza, fastfetch, fd, git, htop, jq, lazygit, ripgrep, vim, wget
+bat, btop, curl, eza, fastfetch, fd, ffmpeg-full, fzf, git, htop, imagemagick-full, jq, lazygit, poppler, resvg, ripgrep, sevenzip, vim, wget, yazi, zoxide — then `brew link ffmpeg-full imagemagick-full -f --overwrite` so the `-full` kegs’ binaries are linked
 
 #### Media (`install/media.sh`)
 
@@ -235,7 +235,7 @@ Brave Browser, DuckDuckGo, Spotify, VLC
 #### Shell and terminal (`install/shell.sh`)
 
 - **Homebrew formulas**: Oh My Posh (`jandedobbeleer/oh-my-posh/oh-my-posh`), Ghostty, Zsh, tmux, zsh-autosuggestions, zsh-syntax-highlighting
-- **Homebrew casks**: Font Awesome Terminal Fonts, Fira Code, Meslo LG Nerd Font, Powerline Symbols
+- **Homebrew casks**: Font Awesome Terminal Fonts, Fira Code, Meslo LG Nerd Font, Powerline Symbols, Symbols Only Nerd Font (for terminal icons such as **Yazi**)
 
 #### Post-install (`install/post-install.sh`)
 
