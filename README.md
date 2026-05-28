@@ -208,7 +208,7 @@ Illustrative list; see each script under `src/scripts/install/` and `src/scripts
 
 #### CLI tools (`install/cli.sh`)
 
-bat, btop, curl, eza, fastfetch, fd, ffmpeg-full, fzf, git, htop, imagemagick-full, jq, lazygit, poppler, resvg, ripgrep, sevenzip, vim, wget, yazi, zoxide — then `brew link ffmpeg-full imagemagick-full -f --overwrite` so the `-full` kegs’ binaries are linked
+bat, btop, curl, eza, fastfetch, fd, ffmpeg-full, fzf, git, htop, imagemagick-full, jq, lazygit, poppler, resvg, ripgrep, sevenzip, vim, wget, yazi, zoxide — **fd** and **ripgrep** also support Neovim Telescope — then `brew link ffmpeg-full imagemagick-full -f --overwrite` so the `-full` kegs’ binaries are linked
 
 #### Media (`install/media.sh`)
 
@@ -221,10 +221,11 @@ Brave Browser, DuckDuckGo, Spotify, VLC
 
 #### Development (`install/dev.sh`)
 
-- **Homebrew formulas**: Node, Python 3.12, Colima, Docker, Docker Compose, GitHub CLI (`gh`), Neovim, Podman, Semgrep, ShellCheck, Tree-sitter, Angular CLI
+- **Homebrew formulas**: Node, Python 3.12, Ruby, Go, Colima, Docker, Docker Compose, GitHub CLI (`gh`), Neovim, Podman, Semgrep, ShellCheck, Tree-sitter, Tree-sitter CLI, Angular CLI
 - **Homebrew casks**: Postman, Visual Studio Code
 - **Other Homebrew**: Sourcegraph app (from `sourcegraph/app` tap), Sourcegraph CLI (`src-cli`)
 - **Also**: NVM (official install script), `packer.nvim` clone for Neovim
+- **Neovim / Mason host runtimes** (also used outside the editor): **Node** and **Python 3.12** for npm- and pip-based Mason tools; **Ruby** (keg-only Homebrew Ruby for `gem install`, e.g. Solargraph); **Go** for Go-based Mason tools (`gopls`, `shfmt`, etc.); **Tree-sitter CLI** to compile Treesitter parsers from source (distinct from the `tree-sitter` library formula). **fd** and **ripgrep** for Telescope are installed in `install/cli.sh`.
 
 #### Security (`install/security.sh`)
 
