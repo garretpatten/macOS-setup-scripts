@@ -1,0 +1,5 @@
+# File copies only; XDG config dirs are symlinked via link_dotfiles_xdg_config_dirs in dotfiles.sh
+
+file home/.vimrc ~/.vimrc
+file home/.zshrc ~/.zshrc
+file vs-code/settings.json ~/Library/Application Support/Code/User/settings.json

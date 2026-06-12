@@ -6,8 +6,8 @@ Guidance for coding agents working in **macOS-setup-scripts**.
 
 - Bash automation for provisioning a development-focused macOS environment (Homebrew, dotfiles, `defaults write`, and related setup).
 - **Orchestrators**: `src/scripts/master.sh` (full run, **interleaved** install + config order), `src/scripts/run-install.sh` (packages only), `src/scripts/run-config.sh` (`defaults`, dotfiles, shell hooks). **npm**: `npm run all` / `installs` / `config` (see `package.json` and `README.md`).
-- **Shared helpers**: `src/scripts/utils.sh` — defines `SCRIPTS_DIR` (always `src/scripts/`), `PROJECT_ROOT`, and `ERROR_LOG_FILE`.
-- Dotfiles live in the `src/dotfiles/` git submodule (do not edit unless the task explicitly requires submodule changes). **`install/*.sh`** installs packages; **`config/*.sh`** applies `defaults`, copies submodule trees into `~`, Git identity, `chsh`, etc. **`config/dev.sh`** and **`config/shell.sh`** copy a **subset** of **`src/dotfiles/config/`** into **`~/.config`**. If the submodule README documents new paths required by **`home/`** files (for example modular **tmux** under **`~/.config/tmux`**, sourced from **`home/.tmux.conf`**), update the matching **`config/`** script—or document **`(cd src/dotfiles && ./setup.sh --link-xdg-config)`** for a full XDG symlink pass.
+- **Shared helpers**: `src/scripts/utils.sh` — defines `SCRIPTS_DIR` (always `src/scripts/`), `PROJECT_ROOT`, and `ERROR_LOG_FILE`. **`src/scripts/lib/dotfiles-install.sh`** — XDG config symlinks and manifest-driven home file copies.
+- Dotfiles live in the `src/dotfiles/` git submodule (do not edit unless the task explicitly requires submodule changes). **`install/*.sh`** installs packages; **`config/*.sh`** applies `defaults`, dotfiles, Git identity, `chsh`, etc. **`config/dotfiles.sh`** symlinks all **`src/dotfiles/config/`** trees into **`~/.config`** and copies home files from **`config/dotfiles.manifest`**. **`config/dev.sh`** invokes dotfiles setup plus Git identity and Colima.
 - User-facing docs: `README.md`.
 - CI on pull requests:
   - **Quality Checks** (`.github/workflows/quality-checks.yaml`) — markdownlint, Prettier, ShellCheck, yamllint via [garretpatten/quality-checks](https://github.com/garretpatten/quality-checks).
@@ -18,8 +18,9 @@ Guidance for coding agents working in **macOS-setup-scripts**.
 ```text
 src/scripts/
   utils.sh, master.sh, run-install.sh, run-config.sh
+  lib/                # dotfiles-install.sh (XDG symlinks, manifest copies)
   install/            # Homebrew, external installers, clones (per category)
-  config/             # defaults write, dotfiles, shell/security tweaks, completion banner
+  config/             # defaults write, dotfiles, shell tweaks, completion banner
 src/dotfiles/         # Submodule — separate repo; excluded from root Prettier runs
 src/assets/           # Static assets (e.g. apple.txt)
 .github/workflows/    # GitHub Actions
