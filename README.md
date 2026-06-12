@@ -86,7 +86,7 @@ Homebrew formulas and casks, system-wide defaults, and repeatability you can tru
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `npm run all`      | Full provisioning (`master.sh`): interleaved installs and configuration (same order as the historical single `master.sh`; see [Execution flow](#execution-flow-mastersh)). |
 | `npm run installs` | Install bundle only (`run-install.sh`): Homebrew, external installers, and security repo clones—no `defaults write` or dotfiles.                                           |
-| `npm run config`   | Configuration bundle only (`run-config.sh`): macOS defaults, home layout, dev/shell dotfiles, Proton Pass `PATH` hook, completion banner.                                  |
+| `npm run config`   | Configuration bundle only (`run-config.sh`): macOS defaults, home layout, dotfiles, Git identity, login shell, completion banner.                                          |
 
 Use **`npm run config`** on machines that already have packages but should pick up the latest `defaults`, dotfiles copies, or shell tweaks from this repo.
 
@@ -119,6 +119,8 @@ macOS-setup-scripts/
 ├── src/
 │   ├── scripts/
 │   │   ├── utils.sh           # Paths, logging, safe copy/download helpers
+│   │   ├── lib/
+│   │   │   └── dotfiles-install.sh  # XDG symlinks and manifest file copies
 │   │   ├── master.sh          # Full run: installs + config (interleaved; see below)
 │   │   ├── run-install.sh     # Install bundle only (--ci skips pre-install)
 │   │   ├── run-config.sh      # Configuration bundle only
@@ -134,9 +136,10 @@ macOS-setup-scripts/
 │   │   └── config/
 │   │       ├── system-config.sh  # defaults write, firewall, pmset; restarts services
 │   │       ├── organizeHome.sh   # Home directory layout
-│   │       ├── dev.sh            # Dotfiles (editors), global git config, colima start
-│   │       ├── shell.sh          # Shell/tmux dotfiles, ~/.dotfiles_path, chsh
-│   │       ├── security.sh       # Proton Pass PATH snippet in ~/.zshrc
+│   │       ├── dotfiles.sh       # Symlink config/ trees; copy home files from manifest
+│   │       ├── dotfiles.manifest # Home-directory file copies (VS Code, .zshrc, etc.)
+│   │       ├── dev.sh            # Dotfiles, global git config, colima start
+│   │       ├── shell.sh          # Default login shell (chsh)
 │   │       └── completion.sh     # Banner + next steps
 │   ├── dotfiles/              # Submodule
 │   └── assets/                # Completion banner (e.g. apple.txt)
@@ -153,15 +156,14 @@ macOS-setup-scripts/
 3. `config/organizeHome.sh` — home directory layout
 4. `install/cli.sh`, `install/media.sh`, `install/productivity.sh` — category installs
 5. `install/dev.sh` — development Homebrew stack, NVM, `packer.nvim`
-6. `config/dev.sh` — editor/Neovim dotfiles, global Git settings, `colima start`
+6. `config/dev.sh` — dotfiles (XDG symlinks + manifest copies), global Git settings, `colima start`
 7. `install/security.sh` — security packages, Proton Pass installer, `~/Hacking` clones
 8. `install/shell.sh` — shell/terminal Homebrew packages
 9. `install/post-install.sh` — `brew` maintenance
-10. `config/shell.sh` — shell/dotfiles and default login shell (via **`zsh`**)
-11. `config/security.sh` — append Proton Pass `PATH` to `~/.zshrc` if missing
-12. `config/completion.sh` — completion banner
+10. `config/shell.sh` — default login shell (via **`zsh`**)
+11. `config/completion.sh` — completion banner
 
-**`run-install.sh`** runs steps **1** (optional) and **4–9** only (no `defaults` or dotfiles). **`run-config.sh`** runs **2**, **3**, **6**, **10–12** in order (full configuration pass without installing packages).
+**`run-install.sh`** runs steps **1** (optional) and **4–9** only (no `defaults` or dotfiles). **`run-config.sh`** runs **2**, **3**, **6**, **10–11** in order (full configuration pass without installing packages).
 
 ## `config/system-config.sh` (macOS defaults)
 
@@ -252,17 +254,17 @@ Brave Browser, DuckDuckGo, Spotify, VLC
 
 Creates `~/Books`, `~/Games`, `~/Hacking`, `~/Projects`; removes empty `~/Templates` if present
 
+#### Dotfiles (`config/dotfiles.sh`)
+
+Symlinks all `src/dotfiles/config/` trees into `~/.config/`, then copies home files from `config/dotfiles.manifest` when the destination is missing
+
 #### Development (`config/dev.sh`)
 
-Optional Neovim / Vim / VS Code / terminal-app config from `src/dotfiles/`, global Git user settings and credential helper, `colima start`
+Runs `config/dotfiles.sh`, seeds global Git settings when `~/.gitconfig` is absent, `colima start`
 
 #### Shell and terminal (`config/shell.sh`)
 
-- **Also**: Ghostty and Oh My Posh config trees, **`~/.config/tmux/`** (modular tmux includes/themes), `.zshrc`, `.tmux.conf` from `src/dotfiles/`; writes **`~/.dotfiles_path`** when missing or stale; default login shell set to Zsh
-
-#### Security (`config/security.sh`)
-
-Appends **`export PATH="/Users/garret/.local/bin:$PATH"`** to `~/.zshrc` when Proton Pass CLI’s bin is not already referenced (runs after `config/shell.sh` so the main `~/.zshrc` is copied first).
+- Sets default login shell to Zsh (`chsh`)
 
 #### Completion (`config/completion.sh`)
 
@@ -289,9 +291,9 @@ tail -n 50 setup_errors.log
 
 ## Dotfiles integration notes
 
-- **`~/.dotfiles_path`**: `config/shell.sh` seeds or refreshes this file so `home/.zshrc` can find the checkout (for example **`…/macOS-setup-scripts/src/dotfiles`**).
-- **tmux**: The vendored **`home/.tmux.conf`** expects **`~/.config/tmux/`** (includes, themes). `config/shell.sh` copies **`src/dotfiles/config/tmux/`** when that destination is not already present.
-- **Full XDG symlink mirror**: To link every **`config/<app>/`** tree under **`~/.config/<app>/`**, run **`./setup.sh --link-xdg-config`** from the submodule directory (see the [dotfiles README](https://github.com/garretpatten/dotfiles/blob/master/README.md)). Parent **`config/`** scripts still copy a **subset** for the apps this repo provisions (`config/dev.sh`, `config/shell.sh`).
+- **`config/dotfiles.sh`**: Symlinks every **`src/dotfiles/config/<app>/`** tree to **`~/.config/<app>/`**, then copies home-directory files listed in **`config/dotfiles.manifest`** (`.zshrc`, `.vimrc`, VS Code settings). Existing real directories at a target path are moved aside with a timestamped backup before linking.
+- **OS-specific zsh**: Snippets under **`config/zsh/`** (for example **`darwin.zsh`**) are picked up automatically once **`~/.config/zsh`** is symlinked; no repo-path cache file is required.
+- **tmux**: Config lives at **`~/.config/tmux/tmux.conf`** via the XDG symlink pass (no separate **`~/.tmux.conf`** copy).
 - **Upstream workflow**: After updating the submodule, run **`npm run config`** (or `master.sh`) to consume changes on this machine.
 
 ## Maintainers
