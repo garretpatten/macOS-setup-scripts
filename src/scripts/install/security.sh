@@ -5,7 +5,7 @@ source "$(dirname "$0")/../utils.sh"
 
 brew install --cask 1password 1password-cli 2>>"$ERROR_LOG_FILE" || true
 brew install openvpn 2>>"$ERROR_LOG_FILE" || true
-brew install --cask protonvpn signal 2>>"$ERROR_LOG_FILE" || true
+brew install --cask proton-pass protonvpn signal 2>>"$ERROR_LOG_FILE" || true
 brew install exiftool nmap 2>>"$ERROR_LOG_FILE" || true
 brew install --cask burp-suite zap 2>>"$ERROR_LOG_FILE" || true
 

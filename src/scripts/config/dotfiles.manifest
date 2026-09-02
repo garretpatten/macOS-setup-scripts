@@ -2,4 +2,6 @@
 
 file home/.vimrc ~/.vimrc
 file home/.zshrc ~/.zshrc
+file home/.bashrc ~/.bashrc
+file home/.tmux.conf ~/.tmux.conf
 file vs-code/settings.json ~/Library/Application Support/Code/User/settings.json
