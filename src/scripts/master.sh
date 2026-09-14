@@ -44,4 +44,5 @@ run "$IDIR/shell.sh"
 run "$IDIR/post-install.sh"
 
 zsh "$CDIR/shell.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute config/shell.sh"
+run "$CDIR/tmux-plugins.sh"
 run "$CDIR/completion.sh"
