@@ -183,3 +183,9 @@ Prettier honors `.prettierignore` (including `src/dotfiles/`). Yamllint loads `.
 - Create commits only when the user asks.
 - Pull requests are validated by **Quality Checks** and **Test Runner**; local runs above should match CI behavior for the four linters.
 - Do not modify `src/dotfiles/` unless the task requires it; submodule changes have their own workflow in that repository.
+
+## GitHub Actions
+
+Whenever a GitHub workflow is added, all GitHub Action pins in that workflow
+should be updated to point to the full-length commit SHA of the most recent
+release.
