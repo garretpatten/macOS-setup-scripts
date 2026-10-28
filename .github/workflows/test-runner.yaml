@@ -73,8 +73,12 @@ jobs:
 
       - name: Verify Google Chrome installation
         run: |
-          if ! command -v google-chrome >/dev/null 2>&1; then
-            echo "❌ google-chrome not found"
+          # The google-chrome cask installs only the app bundle and links no
+          # CLI binary, so verify the app itself instead of `google-chrome`.
+          CHROME_APP="/Applications/Google Chrome.app"
+          if [[ ! -d "$CHROME_APP" ]]; then
+            echo "❌ Google Chrome.app not found"
             exit 1
           fi
-          google-chrome --version
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \
+            "$CHROME_APP/Contents/Info.plist"
