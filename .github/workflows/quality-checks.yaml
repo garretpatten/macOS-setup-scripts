@@ -17,5 +17,3 @@ jobs:
       prettier_run: true
       shellcheck_run: true
       yamllint_run: true
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
