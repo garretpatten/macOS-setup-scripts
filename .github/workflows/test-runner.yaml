@@ -10,6 +10,42 @@ permissions:
   contents: read
 
 jobs:
+  unit-tests:
+    name: 'Unit Tests (bats)'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup bats
+        id: setup-bats
+        # bats-core/bats-action 4.1.0
+        uses: bats-core/bats-action@3566550e0f594451ac0f58fcbfdeca93aa29a45e
+        with:
+          bats-version: '1.14.0'
+          detik-install: false
+          github-token: ${{ github.token }}
+
+      - name: ShellCheck tests
+        # The shared quality gate only lints changed *.sh/*.bash/*.zsh files,
+        # so cover the extensionless stubs and *.bats files here.
+        run: |
+          shellcheck tests/*.bats tests/helpers/*.bash \
+            tests/stubs/* tests/fixtures/*.sh
+
+      - name: Run bats
+        env:
+          BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
+          TERM: xterm
+        run: bats tests/
+
   test:
     name: 'Test macOS Setup Scripts'
     runs-on: macos-latest

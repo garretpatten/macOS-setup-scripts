@@ -1,0 +1,42 @@
+#!/bin/bash
+# Fake curl for unit tests. Records its arguments in $STUB_CALL_LOG.
+# CURL_STUB_MODE:
+#   success (default) - write $CURL_STUB_BODY (or "stub body") to the -o file
+#   empty             - create an empty -o file and exit 0
+#   fail              - print an error and exit 22 (curl --fail HTTP error)
+
+echo "curl $*" >>"${STUB_CALL_LOG:-/dev/null}"
+
+output=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -o)
+            output="$2"
+            shift 2
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+case "${CURL_STUB_MODE:-success}" in
+    success)
+        if [[ -n "$output" ]]; then
+            printf '%s\n' "${CURL_STUB_BODY:-stub body}" >"$output"
+        fi
+        ;;
+    empty)
+        if [[ -n "$output" ]]; then
+            : >"$output"
+        fi
+        ;;
+    fail)
+        echo "curl: (22) The requested URL returned error: 404" >&2
+        exit 22
+        ;;
+    *)
+        echo "curl stub: unknown CURL_STUB_MODE '${CURL_STUB_MODE}'" >&2
+        exit 2
+        ;;
+esac
