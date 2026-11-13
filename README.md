@@ -19,6 +19,18 @@ Homebrew installs, shell and Terminal setup, optional dotfiles, and opinionated<
   <img src="https://img.shields.io/badge/platform-macOS-0071e3?style=flat-square&logo=apple&logoColor=white" alt="Runs on macOS" />
 </p>
 
+<p align="center">
+  <a href="https://github.com/garretpatten/macOS-setup-scripts/actions/workflows/test-runner.yaml"
+      ><img src="https://img.shields.io/github/actions/workflow/status/garretpatten/macOS-setup-scripts/test-runner.yaml?branch=master&label=macOS%20CI&logo=github&style=flat-square" alt="Test runner workflow status"
+  /></a>
+  <a href="https://github.com/garretpatten/macOS-setup-scripts/actions/workflows/quality-checks.yaml"
+      ><img src="https://img.shields.io/github/actions/workflow/status/garretpatten/macOS-setup-scripts/quality-checks.yaml?branch=master&label=quality&logo=github&style=flat-square" alt="Quality checks workflow status"
+  /></a>
+  <a href="https://github.com/garretpatten/macOS-setup-scripts/actions/workflows/security-guardrails.yaml"
+      ><img src="https://img.shields.io/github/actions/workflow/status/garretpatten/macOS-setup-scripts/security-guardrails.yaml?branch=master&label=security&logo=github&style=flat-square" alt="Security guardrails workflow status"
+  /></a>
+</p>
+
 <!-- markdownlint-enable MD033 MD041 -->
 
 ---
