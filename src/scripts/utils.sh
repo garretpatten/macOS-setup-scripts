@@ -57,6 +57,11 @@ download_file_safe() {
     local url="$1"
     local destination="$2"
 
+    # Idempotent like the copy helpers: keep a non-empty file that already exists.
+    if [[ -s "$destination" ]]; then
+        return 0
+    fi
+
     curl -sSL --connect-timeout 30 --max-time 300 --fail --show-error "$url" -o "$destination" || {
         log_error "Failed to download $url"
         rm -f "$destination" 2>/dev/null || true

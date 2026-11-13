@@ -1,0 +1,5 @@
+#!/bin/bash
+# Fake zsh for unit tests: records the call, then runs the script with bash.
+
+echo "zsh $*" >>"${STUB_CALL_LOG:-/dev/null}"
+exec bash "$@"

@@ -115,7 +115,7 @@ bash src/scripts/config/organizeHome.sh
 ```text
 macOS-setup-scripts/
 ├── .github/workflows/
-│   └── test-runner.yaml      # CI: master.sh --ci on macOS runners
+│   └── test-runner.yaml      # CI: bats unit tests + master.sh --ci on macOS runners
 ├── src/
 │   ├── scripts/
 │   │   ├── utils.sh           # Paths, logging, safe copy/download helpers
@@ -143,6 +143,7 @@ macOS-setup-scripts/
 │   │       └── completion.sh     # Banner + next steps
 │   ├── dotfiles/              # Submodule
 │   └── assets/                # Completion banner (e.g. apple.txt)
+├── tests/                     # bats unit tests (see Testing)
 ├── setup_errors.log           # Created at repo root when scripts run (gitignored)
 └── LICENSE
 ```
@@ -195,7 +196,38 @@ Scripts append command errors with `2>>"$ERROR_LOG_FILE" || true` where appropri
 
 ## Testing
 
-On push/PR to `master`, **Test Runner** (`.github/workflows/test-runner.yaml`) runs `bash src/scripts/master.sh --ci` on a GitHub-hosted macOS runner. That skips `install/pre-install.sh` to avoid long Xcode/OS update steps; the workflow checks `setup_errors.log` for real failures.
+Tests come in two layers:
+
+- **Unit tests** (`tests/*.bats`, [bats-core](https://github.com/bats-core/bats-core)): fast, pure Bash and filesystem checks for `utils.sh` helpers and the `run-install.sh` / `master.sh` orchestration (step order, `--ci`, error logging). Each test runs in a `mktemp -d` sandbox with `HOME` pointed into it, fake `curl`/`zsh` binaries from `tests/stubs/`, and a sandbox `src/scripts` tree whose child scripts only record that they ran. Nothing touches Homebrew or `defaults`, so they run on Linux or macOS.
+- **End-to-end** (`master.sh --ci` on `macos-latest`): the full provisioning run, which is the only coverage for the leaf `install/*.sh` and `config/*.sh` scripts and their macOS side effects.
+
+Run the unit tests locally:
+
+```bash
+brew install bats-core
+brew tap bats-core/bats-core
+brew install bats-support bats-assert bats-file
+bats tests/
+```
+
+`tests/helpers/setup.bash` looks for the helper libraries in `$BATS_LIB_PATH`, `/usr/lib`, `/usr/local/lib`, and `/opt/homebrew/lib`.
+
+On push/PR to `master`, **Test Runner** (`.github/workflows/test-runner.yaml`) runs both layers:
+
+- `unit-tests` (ubuntu-latest): ShellCheck on `tests/`, then `bats tests/`.
+- `test` (macos-latest): `bash src/scripts/master.sh --ci`. That skips `install/pre-install.sh` to avoid long Xcode/OS update steps; the workflow checks `setup_errors.log` for real failures.
+
+Layout:
+
+```text
+tests/
+├── utils.bats          # utils.sh helpers
+├── run-install.bats    # run-install.sh (--ci, order, error log)
+├── master.bats         # master.sh orchestration
+├── helpers/setup.bash  # sandbox setup, fixture tree builder
+├── stubs/              # fake curl and zsh
+└── fixtures/           # recording child script, sample files
+```
 
 ## What gets installed and configured
 

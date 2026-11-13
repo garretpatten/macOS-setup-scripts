@@ -11,7 +11,8 @@ Guidance for coding agents working in **macOS-setup-scripts**.
 - User-facing docs: `README.md`.
 - CI on pull requests:
   - **Quality Checks** (`.github/workflows/quality-checks.yaml`) — markdownlint, Prettier, ShellCheck, yamllint via [garretpatten/quality-checks](https://github.com/garretpatten/quality-checks).
-  - **Test Runner** (`.github/workflows/test-runner.yaml`) — runs `bash src/scripts/master.sh --ci` on `macos-latest` (skips `install/pre-install.sh`).
+  - **Test Runner** (`.github/workflows/test-runner.yaml`) — `unit-tests` runs ShellCheck on `tests/` and `bats tests/` on `ubuntu-latest`; `test` runs `bash src/scripts/master.sh --ci` on `macos-latest` (skips `install/pre-install.sh`).
+- Unit tests: `tests/*.bats` (bats-core with bats-support/assert/file). Run `bats tests/` after changing `utils.sh`, `run-install.sh`, or `master.sh`. Orchestrators keep a `BASH_SOURCE` main guard so tests can source them.
 
 ## Layout
 
@@ -23,6 +24,7 @@ src/scripts/
   config/             # defaults write, dotfiles, shell tweaks, completion banner
 src/dotfiles/         # Submodule — separate repo; excluded from root Prettier runs
 src/assets/           # Static assets (e.g. apple.txt)
+tests/                # bats unit tests, helpers/, stubs/, fixtures/
 .github/workflows/    # GitHub Actions
 ```
 
@@ -156,7 +158,8 @@ shellcheck src/scripts/utils.sh \
   src/scripts/run-install.sh \
   src/scripts/run-config.sh \
   src/scripts/install/*.sh \
-  src/scripts/config/*.sh
+  src/scripts/config/*.sh \
+  tests/*.bats tests/helpers/*.bash tests/stubs/* tests/fixtures/*.sh
 yamllint .github .yamllint .markdownlint.yaml
 ```
 
