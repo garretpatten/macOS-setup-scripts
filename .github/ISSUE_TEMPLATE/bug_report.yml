@@ -1,0 +1,59 @@
+---
+name: Bug report
+description: Incorrect behavior during or after provisioning
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share macOS version plus the commands that reproduce the
+        issue. Add redacted `setup_errors.log` lines when helpful.
+        Read **CONTRIBUTING.md** before submitting.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Expected vs actual
+      description: What should happen versus what occurred?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: |
+        Prefer orchestrators: `master.sh`, `run-install.sh`, or
+        `run-config.sh`.
+
+        Or cite granular `install/*.sh` / `config/*.sh` under
+        `src/scripts/`.
+      placeholder: |
+        bash src/scripts/master.sh
+        # or: npm run all
+        …
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: macOS and environment
+      description: |
+        Paste `sw_vers` and `uname -m`. Mention Apple Silicon vs
+        Intel, and Homebrew, when relevant.
+      placeholder: |
+        macOS 15.1, Apple Silicon (arm64), Homebrew 4.x
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional but helpful)
+      description: >
+        Repo-root **`setup_errors.log`** snippet or Actions URL.
+      render: plaintext
+    validations:
+      required: false
