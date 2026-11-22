@@ -34,6 +34,7 @@ main() {
     run_install "$IDIR/media.sh"
     run_install "$IDIR/productivity.sh"
     run_install "$IDIR/dev.sh"
+    run_install "$IDIR/google-mcp-server.sh"
     run_install "$IDIR/security.sh"
     run_install "$IDIR/shell.sh"
     run_install "$IDIR/post-install.sh"
