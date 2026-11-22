@@ -46,6 +46,7 @@ master_run() {
         install/media.sh \
         install/productivity.sh \
         install/dev.sh \
+        install/google-mcp-server.sh \
         config/dev.sh \
         install/security.sh \
         install/shell.sh \
@@ -63,7 +64,7 @@ master_run() {
     run cat "$CALL_LOG"
     assert_line --index 0 install/pre-install.sh
     assert_line --index 1 config/system-config.sh
-    assert_equal "${#lines[@]}" 14
+    assert_equal "${#lines[@]}" 15
 }
 
 @test "config/shell.sh is run with zsh" {
@@ -89,8 +90,8 @@ master_run() {
     assert_file_contains "$FIXTURE_ERROR_LOG" "^fixture failure: config/dev.sh$"
     assert_file_contains "$FIXTURE_ERROR_LOG" "\[ERROR\] Failed to execute .*/config/dev.sh$"
     run cat "$CALL_LOG"
-    assert_line --index 7 install/security.sh
-    assert_line --index 12 config/completion.sh
+    assert_line --index 8 install/security.sh
+    assert_line --index 13 config/completion.sh
 }
 
 @test "a failing zsh config/shell.sh step is logged" {
@@ -99,7 +100,7 @@ master_run() {
     assert_success
     assert_file_contains "$FIXTURE_ERROR_LOG" "\[ERROR\] Failed to execute config/shell.sh$"
     run cat "$CALL_LOG"
-    assert_line --index 12 config/completion.sh
+    assert_line --index 13 config/completion.sh
 }
 
 @test "run() failure path writes to the error log" {

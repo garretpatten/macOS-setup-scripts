@@ -39,6 +39,7 @@ teardown() {
         install/media.sh \
         install/productivity.sh \
         install/dev.sh \
+        install/google-mcp-server.sh \
         install/security.sh \
         install/shell.sh \
         install/post-install.sh)"
@@ -55,8 +56,8 @@ teardown() {
     run cat "$CALL_LOG"
     assert_line --index 0 install/pre-install.sh
     assert_line --index 1 install/cli.sh
-    assert_line --index 7 install/post-install.sh
-    assert_equal "${#lines[@]}" 8
+    assert_line --index 8 install/post-install.sh
+    assert_equal "${#lines[@]}" 9
 }
 
 @test "main ignores unrelated arguments" {
@@ -90,8 +91,8 @@ teardown() {
 
     # Later scripts still ran.
     run cat "$CALL_LOG"
-    assert_line --index 5 install/shell.sh
-    assert_line --index 6 install/post-install.sh
+    assert_line --index 6 install/shell.sh
+    assert_line --index 7 install/post-install.sh
 }
 
 @test "run_install on a missing script logs a failure" {
