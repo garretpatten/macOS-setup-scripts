@@ -40,7 +40,6 @@ main() {
     run "$IDIR/media.sh"
     run "$IDIR/productivity.sh"
     run "$IDIR/dev.sh"
-    run "$IDIR/google-mcp-server.sh"
     run "$CDIR/dev.sh"
     run "$IDIR/security.sh"
     run "$IDIR/shell.sh"

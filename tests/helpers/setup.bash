@@ -12,7 +12,7 @@ BATS_LIB_PATH="${BATS_LIB_PATH:+$BATS_LIB_PATH:}/usr/lib:/usr/local/lib:/opt/hom
 export BATS_LIB_PATH
 
 # Child scripts replaced by tests/fixtures/child-script.sh in the sandbox tree.
-FIXTURE_INSTALL_SCRIPTS=(pre-install cli media productivity dev google-mcp-server security shell post-install)
+FIXTURE_INSTALL_SCRIPTS=(pre-install cli media productivity dev security shell post-install)
 FIXTURE_CONFIG_SCRIPTS=(system-config organizeHome dev shell tmux-plugins completion)
 
 common_setup() {

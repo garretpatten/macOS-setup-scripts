@@ -97,7 +97,7 @@ Homebrew formulas and casks, system-wide defaults, and repeatability you can tru
 | Command            | Runs                                                                                                                                                                       |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `npm run all`      | Full provisioning (`master.sh`): interleaved installs and configuration (same order as the historical single `master.sh`; see [Execution flow](#execution-flow-mastersh)). |
-| `npm run installs` | Install bundle only (`run-install.sh`): Homebrew, external installers, security repo clones, and `google-mcp-server`—no `defaults write` or dotfiles.                      |
+| `npm run installs` | Install bundle only (`run-install.sh`): Homebrew, external installers, and security repo clones—no `defaults write` or dotfiles.                                           |
 | `npm run config`   | Configuration bundle only (`run-config.sh`): macOS defaults, home layout, dotfiles, Git identity, login shell, completion banner.                                          |
 
 Use **`npm run config`** on machines that already have packages but should pick up the latest `defaults`, dotfiles copies, or shell tweaks from this repo.
@@ -142,7 +142,6 @@ macOS-setup-scripts/
 │   │   │   ├── media.sh       # Media casks
 │   │   │   ├── productivity.sh
 │   │   │   ├── dev.sh         # Dev formulas/casks, NVM, packer.nvim
-│   │   │   ├── google-mcp-server.sh # Clone and build google-mcp-server for opencode
 │   │   │   ├── security.sh    # Security packages, Proton Pass installer, clones
 │   │   │   ├── shell.sh       # Terminal fonts, Ghostty, tmux, Oh My Posh, etc.
 │   │   │   └── post-install.sh# brew update / upgrade / cleanup
@@ -170,15 +169,14 @@ macOS-setup-scripts/
 3. `config/organizeHome.sh` — home directory layout
 4. `install/cli.sh`, `install/media.sh`, `install/productivity.sh` — category installs
 5. `install/dev.sh` — development Homebrew stack, NVM, `packer.nvim`
-6. `install/google-mcp-server.sh` — clone or update `~/Projects/google-mcp-server`, build it, and copy OAuth client credentials
-7. `config/dev.sh` — dotfiles (XDG symlinks + manifest copies), global Git settings, `colima start`
-8. `install/security.sh` — security packages, Proton Pass installer, `~/Hacking` clones
-9. `install/shell.sh` — shell/terminal Homebrew packages
-10. `install/post-install.sh` — `brew` maintenance
-11. `config/shell.sh` — default login shell (via **`zsh`**)
-12. `config/completion.sh` — completion banner
+6. `config/dev.sh` — dotfiles (XDG symlinks + manifest copies), global Git settings, `colima start`
+7. `install/security.sh` — security packages, Proton Pass installer, `~/Hacking` clones
+8. `install/shell.sh` — shell/terminal Homebrew packages
+9. `install/post-install.sh` — `brew` maintenance
+10. `config/shell.sh` — default login shell (via **`zsh`**)
+11. `config/completion.sh` — completion banner
 
-**`run-install.sh`** runs steps **1** (optional) and **4–6**, **8–10** only (no `defaults` or dotfiles). **`run-config.sh`** runs **2**, **3**, **7**, **11–12** in order (full configuration pass without installing packages).
+**`run-install.sh`** runs steps **1** (optional) and **4–5**, **7–9** only (no `defaults` or dotfiles). **`run-config.sh`** runs **2**, **3**, **6**, **10–11** in order (full configuration pass without installing packages).
 
 ## `config/system-config.sh` (macOS defaults)
 
@@ -275,16 +273,6 @@ Brave Browser, DuckDuckGo, Spotify, VLC
 - **Other Homebrew**: Sourcegraph app (from `sourcegraph/app` tap), Sourcegraph CLI (`src-cli`)
 - **Also**: NVM (official install script), `packer.nvim` clone for Neovim
 - **Neovim / Mason host runtimes** (also used outside the editor): **Node** and **Python 3.12** for npm- and pip-based Mason tools; **Ruby** (keg-only Homebrew Ruby for `gem install`, e.g. Solargraph); **Go** for Go-based Mason tools (`gopls`, `shfmt`, etc.); **Tree-sitter CLI** to compile Treesitter parsers from source (distinct from the `tree-sitter` library formula). **fd** and **ripgrep** for Telescope are installed in `install/cli.sh`.
-
-#### Google MCP server (`install/google-mcp-server.sh`)
-
-- Clones [google-mcp-server](https://github.com/garretpatten/google-mcp-server) into `~/Projects/google-mcp-server`, or fast-forwards an existing checkout
-- Runs `npm ci` and `npm run build` (requires Node >= 24, installed by `install/dev.sh`)
-- Copies `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` from `~/Projects/system-scripts/.env` (or `~/Scripts/system-scripts/.env`) into the new repo's `.env` (chmod 600; never committed). An existing `GOOGLE_REFRESH_TOKEN` is left in place
-- Prompts to run the interactive `npm run auth` consent flow (opt-in, default no; skipped when the session is not a TTY)
-- Verifies `dist/index.js` exists and, when all three OAuth values are set, starts the stdio server briefly to confirm it comes up cleanly
-
-The opencode config in [dotfiles](https://github.com/garretpatten/dotfiles) already points at `~/Projects/google-mcp-server/dist/index.js`; this step only provisions that checkout.
 
 #### Security (`install/security.sh`)
 
