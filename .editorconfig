@@ -1,0 +1,27 @@
+# EditorConfig: https://editorconfig.org
+#
+# Pins the formatting style the shared quality-checks workflow's tools expect.
+# shfmt reads these keys when run without explicit flags (as CI does), so keep
+# the [*.sh]/[*.bash]/[*.bats] sections in sync with the repo's shell style.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+# Shell (shfmt): the repo's established style is 4-space indent with binary
+# operators at end of line — both are shfmt/EditorConfig defaults given these
+# keys; CI runs bare `shfmt -d`.
+[*.sh]
+indent_style = space
+indent_size = 4
+
+[*.bash]
+indent_style = space
+indent_size = 4
+
+[*.bats]
+indent_style = space
+indent_size = 4

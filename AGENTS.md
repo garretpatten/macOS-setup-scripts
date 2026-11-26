@@ -73,6 +73,9 @@ If a dotfiles change is needed:
 ## Shell script conventions
 
 - Use `#!/bin/bash` and `set` behavior consistent with neighboring scripts.
+- Shell files are formatted with **shfmt** (CI runs bare `shfmt -d`, which reads
+  `.editorconfig`): 4-space indent, no space after redirects, binary operators
+  at end of line. Run `shfmt -d` before finalizing; `shfmt -w` fixes.
 - Source shared code with a ShellCheck hint. Scripts in **`install/`** or **`config/`**:
 
   ```bash
@@ -93,17 +96,31 @@ If a dotfiles change is needed:
 | markdownlint-cli2 | `.markdownlint.yaml`, `.markdownlintignore` | MD013 (line length) is off                       |
 | Prettier          | `.prettierrc`, `.prettierignore`            | `src/dotfiles/` is ignored at repo root          |
 | ShellCheck        | `.shellcheckrc`                             | `external-sources=true`, `source-path=SCRIPTDIR` |
+| shfmt             | `.editorconfig`                             | Reads EditorConfig; 4-space shell indent         |
 | yamllint          | `.yamllint`                                 | Line length max 80; `document-start` disabled    |
 
 ## Required quality gate
 
-**Before you finalize any change** (end of task, commit, or PR), you **must** run all four linters below on every file you added or modified (and on any new files you created). Do not skip this step.
+**Before you finalize any change** (end of task, commit, or PR), you **must** run all
+five linters below on every file you added or modified (and on any new files you
+created). Do not skip this step.
 
 1. Fix reported issues (use auto-fix flags where noted).
-2. Re-run checks until all four pass.
-3. In your final message, state that the four linters passed or list anything you could not run and why.
+2. Re-run checks until all five pass.
+3. In your final message, state that the linters passed or list anything you
+   could not run and why.
 
-If a tool is missing locally, install it (see [Prerequisites](#prerequisites)) or use the `npx` / `pip3` invocations below. Do not mark work complete while known lint failures remain in changed paths.
+The shared [garretpatten/quality-checks](https://github.com/garretpatten/quality-checks)
+workflow auto-enables additional tools from the PR diff (shfmt, editorconfig,
+typos, and others — see the [CI and quality
+standard](https://github.com/garretpatten/github-standards/blob/master/ci-and-quality.md)).
+The five local checks cover the common failures; when adding file types beyond
+shell/YAML/Markdown/JSON, check the standard for the matching tool before
+opening a PR.
+
+If a tool is missing locally, install it (see [Prerequisites](#prerequisites))
+or use the `npx` / `pip3` invocations below. Do not mark work complete while
+known lint failures remain in changed paths.
 
 ## Prerequisites
 
@@ -116,7 +133,7 @@ npm ci
 Install CLI tools if needed (macOS examples):
 
 ```bash
-brew install shellcheck
+brew install shellcheck shfmt
 pip3 install yamllint
 npm install -g markdownlint-cli2   # optional; npx works without global install
 ```
@@ -163,6 +180,13 @@ Then run (skip a tool when its file list is empty):
 # ShellCheck
 [[ ${#SH_FILES[@]} -gt 0 ]] && shellcheck "${SH_FILES[@]}"
 
+# shfmt — check (mirrors CI: bare `shfmt -d` on *.sh/*.bash/*.zsh only;
+# extensionless files such as tests/stubs/* are NOT formatted by CI)
+[[ ${#SH_FILES[@]} -gt 0 ]] && shfmt -d "${SH_FILES[@]}"
+
+# shfmt — write, then re-check
+[[ ${#SH_FILES[@]} -gt 0 ]] && shfmt -w "${SH_FILES[@]}" && shfmt -d "${SH_FILES[@]}"
+
 # yamllint
 [[ ${#YAML_FILES[@]} -gt 0 ]] && yamllint "${YAML_FILES[@]}"
 ```
@@ -188,6 +212,13 @@ shellcheck src/scripts/utils.sh \
   src/scripts/install/*.sh \
   src/scripts/config/*.sh \
   tests/*.bats tests/helpers/*.bash tests/stubs/* tests/fixtures/*.sh
+# Extensionless files (tests/stubs/*) are excluded: CI classifies shell files
+# by extension (*.sh/*.bash/*.zsh), so shfmt never runs on them.
+shfmt -d src/scripts/*.sh \
+  src/scripts/install/*.sh \
+  src/scripts/config/*.sh \
+  src/scripts/lib/*.sh \
+  tests/helpers/*.bash tests/fixtures/*.sh
 yamllint .github .yamllint .markdownlint.yaml
 ```
 
@@ -195,7 +226,7 @@ Prettier honors `.prettierignore` (including `src/dotfiles/`). Yamllint loads `.
 
 ## Typical validation order
 
-1. **Shell** (`utils.sh`, orchestrators, `install/*.sh`, `config/*.sh`): `shellcheck`
+1. **Shell** (`utils.sh`, orchestrators, `install/*.sh`, `config/*.sh`): `shellcheck`, then `shfmt -d`
 2. **YAML** (`.github/`, root `*.yaml` / `*.yml`): `yamllint`
 3. **Markdown**: `markdownlint-cli2` (fix with `--fix` if needed)
 4. **Prettier** (JSON, Markdown, YAML, and other supported types in scope): `prettier --check` after any `--write`
@@ -205,6 +236,7 @@ Prettier honors `.prettierignore` (including `src/dotfiles/`). Yamllint loads `.
 - [ ] `markdownlint-cli2` passed on all changed Markdown files
 - [ ] `npx prettier --check` passed on all changed files Prettier handles (respecting `.prettierignore`)
 - [ ] `shellcheck` passed on all changed shell scripts
+- [ ] `shfmt -d` passed on all changed `*.sh`/`*.bash`/`*.zsh` files (style pinned by `.editorconfig`)
 - [ ] `yamllint` passed on all changed YAML files
 - [ ] No unrelated files were reformatted or lint-fixed outside the task scope
 - [ ] If a linter could not be run, that fact is called out explicitly in the summary

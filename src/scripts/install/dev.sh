@@ -4,10 +4,10 @@
 source "$(dirname "$0")/../utils.sh"
 
 brew install node python@3.12 ruby go colima docker docker-compose gh neovim podman \
-  semgrep shellcheck tree-sitter tree-sitter-cli angular-cli \
-  bash-language-server lua-language-server pyright typescript-language-server yaml-language-server \
-  php composer lua luarocks openjdk julia containerd lazydocker \
-  2>>"$ERROR_LOG_FILE" || true
+    semgrep shellcheck tree-sitter tree-sitter-cli angular-cli \
+    bash-language-server lua-language-server pyright typescript-language-server yaml-language-server \
+    php composer lua luarocks openjdk julia containerd lazydocker \
+    2>>"$ERROR_LOG_FILE" || true
 brew install --cask ollama postman visual-studio-code 2>>"$ERROR_LOG_FILE" || true
 brew install sourcegraph/app/sourcegraph 2>>"$ERROR_LOG_FILE" || true
 brew install src-cli 2>>"$ERROR_LOG_FILE" || true
