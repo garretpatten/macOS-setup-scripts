@@ -151,6 +151,7 @@ macOS-setup-scripts/
 │   │       ├── dotfiles.sh       # Symlink config/ trees; copy home files from manifest
 │   │       ├── dotfiles.manifest # Home-directory file copies (VS Code, .zshrc, etc.)
 │   │       ├── dev.sh            # Dotfiles, global git config, colima start
+│   │       ├── validate-config.sh # Assert package supply-chain cooldown configs
 │   │       ├── shell.sh          # Default login shell (chsh)
 │   │       └── completion.sh     # Banner + next steps
 │   ├── dotfiles/              # Submodule
@@ -170,13 +171,14 @@ macOS-setup-scripts/
 4. `install/cli.sh`, `install/media.sh`, `install/productivity.sh` — category installs
 5. `install/dev.sh` — development Homebrew stack, NVM, `packer.nvim`
 6. `config/dev.sh` — dotfiles (XDG symlinks + manifest copies), global Git settings, `colima start`
-7. `install/security.sh` — security packages, Proton Pass installer, `~/Hacking` clones
-8. `install/shell.sh` — shell/terminal Homebrew packages
-9. `install/post-install.sh` — `brew` maintenance
-10. `config/shell.sh` — default login shell (via **`zsh`**)
-11. `config/completion.sh` — completion banner
+7. `config/validate-config.sh` — assert the package supply-chain cooldown configs are provisioned
+8. `install/security.sh` — security packages, Proton Pass installer, `~/Hacking` clones
+9. `install/shell.sh` — shell/terminal Homebrew packages
+10. `install/post-install.sh` — `brew` maintenance
+11. `config/shell.sh` — default login shell (via **`zsh`**)
+12. `config/completion.sh` — completion banner
 
-**`run-install.sh`** runs steps **1** (optional) and **4–5**, **7–9** only (no `defaults` or dotfiles). **`run-config.sh`** runs **2**, **3**, **6**, **10–11** in order (full configuration pass without installing packages).
+**`run-install.sh`** runs steps **1** (optional) and **4–5**, **8–10** only (no `defaults` or dotfiles). **`run-config.sh`** runs **2**, **3**, **6–7**, **11–12** in order (full configuration pass without installing packages).
 
 ## `config/system-config.sh` (macOS defaults)
 
@@ -307,6 +309,10 @@ Symlinks all `src/dotfiles/config/` trees into `~/.config/`, then copies home fi
 
 Runs `config/dotfiles.sh`, seeds global Git settings when `~/.gitconfig` is absent, `colima start`
 
+#### Config validation (`config/validate-config.sh`)
+
+Asserts the 7-day package supply-chain cooldown configs (npm, pip, uv, cargo) are present: in the pinned `src/dotfiles` submodule, declared in `config/dotfiles.manifest`, and provisioned into `$HOME`. Exits non-zero and logs to `setup_errors.log` when anything is missing
+
 #### Shell and terminal (`config/shell.sh`)
 
 - Sets default login shell to Zsh (`chsh`)
@@ -337,6 +343,7 @@ tail -n 50 setup_errors.log
 ## Dotfiles integration notes
 
 - **`config/dotfiles.sh`**: Symlinks every **`src/dotfiles/config/<app>/`** tree to **`~/.config/<app>/`**, then copies home-directory files listed in **`config/dotfiles.manifest`** (`.zshrc`, `.vimrc`, VS Code settings). Existing real directories at a target path are moved aside with a timestamped backup before linking.
+- **Package supply-chain cooldowns**: The pinned **`src/dotfiles`** carries 7-day publish-age cooldowns for npm (`home/.npmrc`), pip (`config/pip/pip.conf`), uv (`config/uv/uv.toml`), and cargo (`home/.cargo/config.toml`). pip and uv arrive via the XDG symlink pass; npm and cargo are per-file manifest copies. **Never symlink the whole `.cargo` tree** — rustup owns `~/.cargo/bin`, `env`, and the registry. `config/validate-config.sh` asserts all of this after provisioning.
 - **OS-specific zsh**: Snippets under **`config/zsh/`** (for example **`darwin.zsh`**) are picked up automatically once **`~/.config/zsh`** is symlinked; no repo-path cache file is required.
 - **tmux**: Config lives at **`~/.config/tmux/tmux.conf`** via the XDG symlink pass (no separate **`~/.tmux.conf`** copy).
 - **Upstream workflow**: After updating the submodule, run **`npm run config`** (or `master.sh`) to consume changes on this machine.

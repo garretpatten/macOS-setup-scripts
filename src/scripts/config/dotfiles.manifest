@@ -3,5 +3,8 @@
 file home/.vimrc ~/.vimrc
 file home/.zshrc ~/.zshrc
 file home/.bashrc ~/.bashrc
-file home/.tmux.conf ~/.tmux.conf
+file home/.npmrc ~/.npmrc
+# Copy .cargo per file; never symlink the whole .cargo tree (rustup owns
+# ~/.cargo/bin, env, and the registry).
+file home/.cargo/config.toml ~/.cargo/config.toml
 file vs-code/settings.json ~/Library/Application Support/Code/User/settings.json

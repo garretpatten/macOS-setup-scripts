@@ -19,6 +19,7 @@ run_config() {
 run_config "$CDIR/system-config.sh"
 run_config "$CDIR/organizeHome.sh"
 run_config "$CDIR/dev.sh"
+run_config "$CDIR/validate-config.sh"
 zsh "$CDIR/shell.sh" 2>>"$ERROR_LOG_FILE" || log_error "Failed to execute config/shell.sh"
 run_config "$CDIR/tmux-plugins.sh"
 run_config "$CDIR/completion.sh"

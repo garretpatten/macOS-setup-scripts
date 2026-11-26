@@ -15,7 +15,7 @@ log_error() {
     local timestamp
     timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo -e "\033[0;31m[ERROR]\033[0m $message" >&2
-    echo "[$timestamp] [ERROR] $message" >> "$ERROR_LOG_FILE"
+    echo "[$timestamp] [ERROR] $message" >>"$ERROR_LOG_FILE"
 }
 
 ensure_directory() {
