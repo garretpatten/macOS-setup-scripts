@@ -13,7 +13,7 @@ export BATS_LIB_PATH
 
 # Child scripts replaced by tests/fixtures/child-script.sh in the sandbox tree.
 FIXTURE_INSTALL_SCRIPTS=(pre-install cli media productivity dev security shell post-install)
-FIXTURE_CONFIG_SCRIPTS=(system-config organizeHome dev shell tmux-plugins completion)
+FIXTURE_CONFIG_SCRIPTS=(system-config organizeHome dev validate-config shell tmux-plugins completion)
 
 common_setup() {
     # run --separate-stderr needs bats >= 1.5.0.
